@@ -144,17 +144,17 @@ describe('Calendar', () => {
 
   it('should display label' , () => {
     const wrapper = shallow(<Calendar name="Start Date"/>);
-    expect(wrapper.find('label').text()).to.contain("Start Date");
+    expect(wrapper.find('label').text()).to.equal("Start Date");
   });
 
   it('should display current month by default' , () => {
     const wrapper = shallow(<Calendar name="Start Date"/>);
-    expect(wrapper.find('th.datepicker-switch').text()).to.contain(moment().format('MMMM YYYY'));
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal(moment().format('MMMM YYYY'));
   });
 
   it('should display set month', () => {
     const wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-05-05'/>);
-    expect(wrapper.find('th.datepicker-switch').text()).to.contain('May 2017');
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('May 2017');
   });
 
   it('should show previous month on left navigation' , () => {
@@ -162,13 +162,13 @@ describe('Calendar', () => {
     expect(wrapper.find('th.datepicker-switch').text()).to.equal('May 2017');
     let previous = wrapper.find('th.prev')
     previous.simulate('click');
-    expect(wrapper.find('th.datepicker-switch').text()).to.contain('April 2017');
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('April 2017');
     previous.simulate('click');
-    expect(wrapper.find('th.datepicker-switch').text()).to.contain('March 2017');
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('March 2017');
     previous.simulate('click');
     previous.simulate('click');
     previous.simulate('click');
-    expect(wrapper.find('th.datepicker-switch').text()).to.contain('December 2016');
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('December 2016');
   });
 
   it('should show next month on right navigation' , () => {
@@ -176,14 +176,18 @@ describe('Calendar', () => {
     expect(wrapper.find('th.datepicker-switch').text()).to.equal('December 2017');
     let next = wrapper.find('th.next')
     next.simulate('click');
-    expect(wrapper.find('th.datepicker-switch').text()).to.contain('January 2018');
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('January 2018');
     next.simulate('click');
-    expect(wrapper.find('th.datepicker-switch').text()).to.contain('February 2018');
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('February 2018');
     next.simulate('click');
     next.simulate('click');
     next.simulate('click');
-    expect(wrapper.find('th.datepicker-switch').text()).to.contain('May 2018');
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('May 2018');
   });
 
-
+  it('should display weekday labels in header', () => {
+    const wrapper = shallow(<Calendar name="Start Date"/>);
+    expect(wrapper.find('th.dow')).to.have.length(7);
+    expect(wrapper.find('th.dow').map((th)=> th.text())).to.deep.equal(['SU','MO','TU','WE','TH','FR','SA']);    
+  });
 });

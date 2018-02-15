@@ -22,18 +22,29 @@ export class Calendar extends Component {
     });
   }
   render() {
-
     return(
       <div>
         <label>{this.props.name}</label>
-        <table class="table-condensed">
+        <table className="table-condensed ">
           <thead>
             <tr>
               <th onClick={this.previous.bind(this)} className="prev" style="visibility: visible;">«</th>
               <th colspan="5" className="datepicker-switch">{this.state.selectedMonth.format('MMMM YYYY')}</th>
               <th onClick={this.next.bind(this)} className="next" style="visibility: visible;">»</th>
             </tr>
+            <tr>
+              <th className="dow" style="visibility: visible;">SU</th>
+              <th className="dow" style="visibility: visible;">MO</th>
+              <th className="dow" style="visibility: visible;">TU</th>
+              <th className="dow" style="visibility: visible;">WE</th>
+              <th className="dow" style="visibility: visible;">TH</th>
+              <th className="dow" style="visibility: visible;">FR</th>
+              <th className="dow" style="visibility: visible;">SA</th>
+            </tr>
           </thead>
+          <tbody>
+
+          </tbody>
         </table>
       </div>
     );
