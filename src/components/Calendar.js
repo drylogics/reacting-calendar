@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import moment from 'moment';
 
 
-export class Calendar extends Component {
+export default class Calendar extends Component {
   constructor(props) {
     super(props);
     let selectedDate = props.selectedDate ? moment(props.selectedDate) : moment();
@@ -21,6 +21,7 @@ export class Calendar extends Component {
       selectedMonth: this.state.selectedMonth.add(1,'months')
     });
   }
+
   render() {
     return(
       <div>
@@ -28,22 +29,22 @@ export class Calendar extends Component {
         <table className="table-condensed ">
           <thead>
             <tr>
-              <th onClick={this.previous.bind(this)} className="prev" style="visibility: visible;">«</th>
-              <th colspan="5" className="datepicker-switch">{this.state.selectedMonth.format('MMMM YYYY')}</th>
-              <th onClick={this.next.bind(this)} className="next" style="visibility: visible;">»</th>
+              <th colSpan={1} onClick={this.previous.bind(this)} className="prev" ><input type="button" value="«"/></th>
+              <th colSpan="5" className="datepicker-switch">{this.state.selectedMonth.format('MMMM YYYY')}</th>
+              <th colSpan="1"onClick={this.next.bind(this)} className="next" ><input type="button" value="»"/></th>
             </tr>
             <tr>
-              <th className="dow" style="visibility: visible;">SU</th>
-              <th className="dow" style="visibility: visible;">MO</th>
-              <th className="dow" style="visibility: visible;">TU</th>
-              <th className="dow" style="visibility: visible;">WE</th>
-              <th className="dow" style="visibility: visible;">TH</th>
-              <th className="dow" style="visibility: visible;">FR</th>
-              <th className="dow" style="visibility: visible;">SA</th>
+              <th colSpan="1" className="dow" >SU</th>
+              <th colSpan="1" className="dow" >MO</th>
+              <th colSpan="1" className="dow" >TU</th>
+              <th colSpan="1" className="dow" >WE</th>
+              <th colSpan="1" className="dow" >TH</th>
+              <th colSpan="1" className="dow" >FR</th>
+              <th colSpan="1" className="dow" >SA</th>
             </tr>
           </thead>
           <tbody>
-
+            <tr></tr>
           </tbody>
         </table>
       </div>

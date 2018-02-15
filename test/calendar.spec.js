@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import { Calendar } from '../src/components/Calendar';
+import Calendar from '../src/components/Calendar';
 import moment from 'moment/moment';
 
 // <div class="from-calendar">
