@@ -171,5 +171,19 @@ describe('Calendar', () => {
     expect(wrapper.find('th.datepicker-switch').text()).to.contain('December 2016');
   });
 
+  it('should show next month on right navigation' , () => {
+    const wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-12-05'/>);
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('December 2017');
+    let next = wrapper.find('th.next')
+    next.simulate('click');
+    expect(wrapper.find('th.datepicker-switch').text()).to.contain('January 2018');
+    next.simulate('click');
+    expect(wrapper.find('th.datepicker-switch').text()).to.contain('February 2018');
+    next.simulate('click');
+    next.simulate('click');
+    next.simulate('click');
+    expect(wrapper.find('th.datepicker-switch').text()).to.contain('May 2018');
+  });
+
 
 });
