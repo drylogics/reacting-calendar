@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
-import moment from 'moment';
+import Moment from 'moment';
+import { extendMoment } from 'moment-range';
+
+const moment = extendMoment(Moment);
 
 
 export default class Calendar extends Component {
@@ -8,19 +11,45 @@ export default class Calendar extends Component {
     let selectedDate = props.selectedDate ? moment(props.selectedDate) : moment();
     this.state = {
       selectedDate: selectedDate,
-      selectedMonth: selectedDate.startOf('month')
+      selectedMonth: selectedDate.clone().startOf('month')
     };
   }
   previous() {
     this.setState({
-      selectedMonth: this.state.selectedMonth.subtract(1,'months')
+      selectedMonth: this.state.selectedMonth.clone().subtract(1,'months')
     });
   }
+  
   next() {
     this.setState({
       selectedMonth: this.state.selectedMonth.add(1,'months')
     });
   }
+
+  calendarDays(activeDate) {
+    let startOfMonth = activeDate.clone().startOf('month')
+    let startDate = (startOfMonth.day() === 0) ? startOfMonth.clone().weekday(-7) : startOfMonth.clone().startOf('week')
+    let endDate = startDate.clone().add(41, 'days')
+    let range = moment.range(startDate, endDate)
+    let tdHtmlClass = ''
+    return Array.from(range.by('day')).map((dt) => { 
+      if(dt.isBefore(activeDate, 'month')){
+        tdHtmlClass = 'day old'
+      }else if(dt.isAfter(activeDate, 'month')){
+        tdHtmlClass = 'day new'
+      }else if(dt.isSame(activeDate, 'day')){
+        tdHtmlClass = 'day active'
+      }else{
+        tdHtmlClass = 'day'
+      }
+      return(
+        <td key={dt.format('DD-MM')} className={tdHtmlClass} value={dt}>
+          {dt.format('DD')}
+        </td>
+      )
+    })
+
+  } 
 
   render() {
     return(
@@ -44,7 +73,7 @@ export default class Calendar extends Component {
             </tr>
           </thead>
           <tbody>
-            <tr></tr>
+            <tr>{this.calendarDays(moment())}</tr>
           </tbody>
         </table>
       </div>
