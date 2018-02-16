@@ -29,9 +29,9 @@ export class Calendar extends Component {
         <table class="table-condensed">
           <thead>
             <tr>
-              <th onClick={this.previous.bind(this)} className="prev" style="visibility: visible;">«</th>
+              <th onClick={this.previous.bind(this)} className="prev">«</th>
               <th colspan="5" className="datepicker-switch">{this.state.selectedMonth.format('MMMM YYYY')}</th>
-              <th onClick={this.next.bind(this)} className="next" style="visibility: visible;">»</th>
+              <th onClick={this.next.bind(this)} className="next">»</th>
             </tr>
           </thead>
         </table>
@@ -40,12 +40,15 @@ export class Calendar extends Component {
   }
 }
 
+export default Calendar;
+
+
 // export class Calendar extends Component {
 //   constructor(props) {
 //     super(props);
 //   }
 
 //   render() {
-//     return <label>hi</label> 
+//     return <label>hi</label>
 //   }
 // }
