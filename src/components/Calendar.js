@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
+import _ from 'lodash';
 
 const moment = extendMoment(Moment);
 
@@ -11,33 +12,38 @@ export default class Calendar extends Component {
     let selectedDate = props.selectedDate ? moment(props.selectedDate) : moment();
     this.state = {
       selectedDate: selectedDate,
-      selectedMonth: selectedDate.clone().startOf('month')
+      selectedMonth: selectedDate.clone().startOf('month'),
+      visibleDate: selectedDate
     };
   }
   previous() {
+    let previousMonth = this.state.selectedMonth.clone().subtract(1,'months')
     this.setState({
-      selectedMonth: this.state.selectedMonth.clone().subtract(1,'months')
+      selectedMonth: previousMonth,
+      visibleDate: previousMonth.clone().startOf('month')
     });
   }
   
   next() {
+    let nextMonth = this.state.selectedMonth.clone().add(1,'months')
     this.setState({
-      selectedMonth: this.state.selectedMonth.add(1,'months')
+      selectedMonth: nextMonth,
+      visibleDate: nextMonth.clone().startOf('month')
     });
   }
 
-  calendarDays(activeDate) {
-    let startOfMonth = activeDate.clone().startOf('month')
+  calendarDays(visibleDate, activeDate) {
+    let startOfMonth = visibleDate.clone().startOf('month')
     let startDate = (startOfMonth.day() === 0) ? startOfMonth.clone().weekday(-7) : startOfMonth.clone().startOf('week')
     let endDate = startDate.clone().add(41, 'days')
     let range = moment.range(startDate, endDate)
     let tdHtmlClass = ''
-    return Array.from(range.by('day')).map((dt) => { 
-      if(dt.isBefore(activeDate, 'month')){
+    let dates = Array.from(range.by('day')).map((dt) => { 
+      if(dt.isBefore(visibleDate, 'month')){
         tdHtmlClass = 'day old'
-      }else if(dt.isAfter(activeDate, 'month')){
+      }else if(dt.isAfter(visibleDate, 'month')){
         tdHtmlClass = 'day new'
-      }else if(dt.isSame(activeDate, 'day')){
+      }else if(dt.isSame(visibleDate, 'day')){
         tdHtmlClass = 'day active'
       }else{
         tdHtmlClass = 'day'
@@ -48,6 +54,13 @@ export default class Calendar extends Component {
         </td>
       )
     })
+
+    return (
+      _.chain(dates)
+      .chunk(7)
+      .map((arr, index)=><tr key={index}>{arr}</tr>)
+      .value()
+    )
 
   } 
 
@@ -73,7 +86,7 @@ export default class Calendar extends Component {
             </tr>
           </thead>
           <tbody>
-            <tr>{this.calendarDays(moment())}</tr>
+            {this.calendarDays(this.state.visibleDate, this.state.selectedDate)}
           </tbody>
         </table>
       </div>

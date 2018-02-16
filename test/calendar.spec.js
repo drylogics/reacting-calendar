@@ -190,4 +190,38 @@ describe('Calendar', () => {
     expect(wrapper.find('th.dow')).to.have.length(7);
     expect(wrapper.find('th.dow').map((th)=> th.text())).to.deep.equal(['SU','MO','TU','WE','TH','FR','SA']);    
   });
+
+  it('should have correct number of date rows and cells', ()=>{
+    const wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-12-05'/>);
+    expect(wrapper.find('tbody tr')).to.have.length(6);
+    wrapper.find('tbody tr').forEach((row)=>{
+      expect(row.find('td.day')).to.have.length(7);
+    })
+    expect(wrapper.find('tbody tr td.day')).to.have.length(42);
+  });
+
+  it('should display selected date by default', () =>{
+    const wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-12-05'/>);
+    wrapper.simulate('load');
+    expect(wrapper.state().visibleDate).to.deep.equal(moment('2017-12-05'))
+    // let dates = wrapper.find('td.day').map((td)=> td.text())
+    // let expectedDates = [ 
+    //   '26','27','28','29','30','01','02',
+    //   '03','04','05','06','07','08','09',
+    //   '10','11','12','13','14','15','16',
+    //   '17','18','19','20','21','22','23',
+    //   '24','25','26','27','28','29','30',
+    //   '31','01','02','03','04','05','06'
+    // ]
+    // expect(dates).to.deep.equal(expectedDates)
+  });
+
+  it('should set visible date to previous month when left arrrow is clicked', () =>{
+    const wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-12-05'/>);
+    expect(wrapper.state().visibleDate).to.deep.equal(moment('2017-12-05'))
+    let previous = wrapper.find('th.prev')
+    previous.simulate('click');
+    wrapper.update();
+    expect(wrapper.state().visibleDate).to.deep.equal(moment('2017-11-01'))
+  });
 });
