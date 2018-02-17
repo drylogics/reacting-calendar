@@ -7,19 +7,33 @@ export class Calendar extends Component {
   constructor(props) {
     super(props);
     let selectedDate = props.selectedDate ? moment(props.selectedDate) : moment();
+    let firstDayOfMonth = moment(selectedDate).startOf('month');
+    let firstDayValue = parseInt(firstDayOfMonth.format('d'));
+    let firstSunday = firstDayOfMonth.subtract(firstDayValue,'days')
     this.state = {
       selectedDate: selectedDate,
+      firstSunday: firstSunday,
       selectedMonth: selectedDate.startOf('month')
     };
   }
   previous() {
+    let selectedDate = this.state.selectedMonth.subtract(1,'months')
+    let firstDayOfMonth = moment(selectedDate).startOf('month');
+    let firstDayValue = parseInt(firstDayOfMonth.format('d'));
+    let firstSunday = firstDayOfMonth.subtract(firstDayValue,'days')
     this.setState({
-      selectedMonth: this.state.selectedMonth.subtract(1,'months')
+      firstSunday: firstSunday,
+      selectedMonth: selectedDate
     });
   }
   next() {
+    let selectedDate = this.state.selectedMonth.add(1,'months')
+    let firstDayOfMonth = moment(selectedDate).startOf('month');
+    let firstDayValue = parseInt(firstDayOfMonth.format('d'));
+    let firstSunday = firstDayOfMonth.subtract(firstDayValue,'days')
     this.setState({
-      selectedMonth: this.state.selectedMonth.add(1,'months')
+      firstSunday: firstSunday,
+      selectedMonth: selectedDate
     });
   }
   render() {
@@ -44,7 +58,7 @@ export class Calendar extends Component {
               <th class="dow">Sa</th>
             </tr>
           </thead>
-          <Days />
+          <Days currentState={this.state}/>
         </table>
       </div>
     );
