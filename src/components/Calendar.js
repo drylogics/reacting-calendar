@@ -15,31 +15,67 @@ export class Calendar extends Component {
     this.state = {
       selectedDate: selectedDate,
       firstSunday: firstSunday,
-      selectedMonth: selectedDate.startOf('month')
+      container: 'days',
+      increaser: 1,
+      increaserName: 'months',
+      selectedMonth: selectedDate.startOf('month'),
+      datepickerLabel: selectedDate.format('MMMM YYYY')
     };
   }
+
+  changeState() {
+    if (this.state.container == 'days'){
+      this.setState({
+        container: 'months',
+        datepickerLabel: (this.state.selectedMonth.format('YYYY'))
+      });
+    } else if (this.state.container == 'months') {
+      this.setState({
+        container: 'years',
+        datepickerLabel: (this.state.selectedMonth.clone().subtract(8,'years').format('YYYY') + "  –  " + this.state.selectedMonth.clone().add(1,'years').format('YYYY'))
+      });
+    } else {
+      this.setState({
+        container: 'years',
+      });
+    }
+  }
+
   previous() {
-    let selectedDate = this.state.selectedMonth.subtract(1,'months')
+    let selectedDate = this.state.selectedMonth.subtract(parseInt(this.state.increaser),this.state.increaserName)
     let firstDayOfMonth = moment(selectedDate).startOf('month');
     let firstDayValue = parseInt(firstDayOfMonth.format('d'));
     let firstSunday = firstDayOfMonth.subtract(firstDayValue,'days')
     this.setState({
       firstSunday: firstSunday,
+      datepickerLabel: selectedDate.format('MMMM YYYY'),
       selectedMonth: selectedDate
     });
   }
   next() {
-    let selectedDate = this.state.selectedMonth.add(1,'months')
+    let selectedDate = this.state.selectedMonth.add(parseInt(this.state.increaser),this.state.increaserName)
     let firstDayOfMonth = moment(selectedDate).startOf('month');
     let firstDayValue = parseInt(firstDayOfMonth.format('d'));
     let firstSunday = firstDayOfMonth.subtract(firstDayValue,'days')
     this.setState({
       firstSunday: firstSunday,
+      datepickerLabel: selectedDate.format('MMMM YYYY'),
       selectedMonth: selectedDate
     });
   }
   render() {
+    let container = this.state.container
+    let allProps = this.state
+    function Greeting() {
+      if (container == 'days') {
+        return <Days currentState={allProps}/>
+      } else if (container == 'months') {
+        return <Months currentState={allProps}/>
+      } else {
+        return <Years currentState={allProps}/>
+      }
 
+    }
     return(
       <div>
         <label>Start Date:</label>
@@ -47,7 +83,7 @@ export class Calendar extends Component {
           <thead>
             <tr>
               <th onClick={this.previous.bind(this)} className="prev">«</th>
-              <th colspan="5" className="datepicker-switch">{this.state.selectedMonth.format('MMMM YYYY')}</th>
+              <th onClick={this.changeState.bind(this)} className="datepicker-switch">{this.state.datepickerLabel}</th>
               <th onClick={this.next.bind(this)} className="next">»</th>
             </tr>
             <tr>
@@ -60,7 +96,7 @@ export class Calendar extends Component {
               <th class="dow">Sa</th>
             </tr>
           </thead>
-          <Days currentState={this.state}/>
+          <Greeting />
         </table>
       </div>
     );
