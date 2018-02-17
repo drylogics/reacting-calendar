@@ -27,11 +27,15 @@ export class Calendar extends Component {
     if (this.state.container == 'days'){
       this.setState({
         container: 'months',
+        increaser: 1,
+        increaserName: 'years',
         datepickerLabel: (this.state.selectedMonth.format('YYYY'))
       });
     } else if (this.state.container == 'months') {
       this.setState({
         container: 'years',
+        increaser: 12,
+        increaserName: 'years',
         datepickerLabel: (this.state.selectedMonth.clone().subtract(8,'years').format('YYYY') + "  –  " + this.state.selectedMonth.clone().add(1,'years').format('YYYY'))
       });
     } else {
