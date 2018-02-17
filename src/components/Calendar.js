@@ -6,13 +6,15 @@ import _ from 'lodash';
 const moment = extendMoment(Moment);
 
 export const Header = (props) => {
-  let visibleDate = moment({y: props.year, M:props.month, d: 1})
+  let {year, month, onPrevious, onNext, onChangeView, currentView, ...otherProps} = props
+  let visibleDate = moment({y: year, M:month, d: 1})
+  
   return (
   <thead>
     <tr>
-      <th onClick={props.onPrevious} colSpan={1} className="prev" ><input type="button" value="«"/></th>
-      <th colSpan="5" className="datepicker-switch">{visibleDate.format('MMMM YYYY')}</th>
-      <th onClick={props.onNext} colSpan="1" className="next" ><input type="button" value="»"/></th>
+      <th onClick={onPrevious} colSpan={1} className="prev" ><input type="button" value="«"/></th>
+      <th colSpan="5" onClick={onChangeView} className="datepicker-switch">{visibleDate.format('MMMM YYYY')}</th>
+      <th onClick={onNext} colSpan="1" className="next" ><input type="button" value="»"/></th>
     </tr>
     <tr>
       <th colSpan="1" className="dow" >SU</th>
@@ -28,8 +30,7 @@ export const Header = (props) => {
 }
 
 export const CalendarDays = (props) => {
-  let visibleDate = props.visibleDate
-  let selectedDate = props.selectedDate
+  let {visibleDate, selectedDate, ...otherProps} = props
   let startOfMonth = visibleDate.clone().startOf('month')
   let startDate = (startOfMonth.day() === 0) ? startOfMonth.clone().weekday(-7) : startOfMonth.clone().startOf('week')
   let endDate = startDate.clone().add(41, 'days')
@@ -64,14 +65,69 @@ export const CalendarDays = (props) => {
   )
 } 
 
+export const CalendarMonths = (props) => {
+  let {visibleDate, selectedDate, ...otherProps} = props
+  let month = visibleDate.month()
+  return(
+    <tbody>
+      <tr>
+        <td colSpan={7}>
+        {
+          moment.monthsShort().map(monthName => {
+            return(
+              <span className={(selectedDate.format('MMM') === monthName) ? 'month active' : 'month'}>
+                {monthName}
+              </span>
+            )
+          })
+        }
+        </td>
+      </tr>
+    </tbody>
+  )
+}
+
+export const CalendarYears = (props) => {
+  let {visibleDate, selectedDate, ...otherProps} = props
+  let activeYear = visibleDate.year()
+  let startOfDecade = activeYear - (activeYear % 10)
+  let spanHtmlClass = ''
+  return(
+    <tbody>
+      <tr>
+        <td colSpan={7}>
+        {
+          _.range(startOfDecade - 1, startOfDecade + 11 ).map(year => {
+            if(year < startOfDecade){
+              spanHtmlClass = 'year old'
+            }else if(year < startOfDecade + 10){
+              spanHtmlClass = (selectedDate.year() === year) ? 'year active' : 'year'
+            }else{
+              spanHtmlClass = 'year new'
+            }
+            return(
+              <span className={spanHtmlClass}>
+                {year}
+              </span>
+            )
+          })
+        }
+        </td>
+      </tr>
+    </tbody>
+  )
+}
+
 export default class Calendar extends Component {
   constructor(props) {
     super(props);
     let selectedDate = (props.selectedDate ? moment(props.selectedDate) : moment()).startOf('day');
+    let currentView = props.currentView ? props.currentView : 'dates'
     this.state = {
       selectedDate: selectedDate,
       selectedMonth: selectedDate.clone().startOf('month'),
-      visibleDate: selectedDate
+      visibleDate: selectedDate,
+      currentView: currentView
     };
   }
 
@@ -91,14 +147,47 @@ export default class Calendar extends Component {
     });
   }
  
+  changeView() {
+    let viewToBeChanged = ''
+    switch(this.state.currentView){
+      case 'dates':
+        viewToBeChanged = 'months'
+        break;
+      case 'months':
+        viewToBeChanged = 'years'
+        break;
+      default:
+        viewToBeChanged = 'years'
+    }
+    this.setState({
+      currentView: viewToBeChanged
+    })
+  }
 
   render() {
     return(
       <div>
         <label>{this.props.name}</label>
         <table className="table-condensed">
-          <Header year={this.state.visibleDate.year()} month={this.state.visibleDate.month()} onPrevious={this.previous.bind(this)} onNext={this.next.bind(this)}/>
-          <CalendarDays visibleDate={this.state.visibleDate} selectedDate={this.state.selectedDate} />
+          <Header 
+            year={this.state.visibleDate.year()} 
+            month={this.state.visibleDate.month()} 
+            onPrevious={this.previous.bind(this)} 
+            onNext={this.next.bind(this)}
+            onChangeView={this.changeView.bind(this)}
+            currentView={this.state.currentView}
+          />
+          {{
+            'months':(
+              <CalendarMonths visibleDate={this.state.visibleDate} selectedDate={this.state.selectedDate}/>
+            ),
+            'years':(
+              <CalendarYears visibleDate={this.state.visibleDate} selectedDate={this.state.selectedDate}/>
+            ),
+            'dates':(
+              <CalendarDays visibleDate={this.state.visibleDate} selectedDate={this.state.selectedDate} />
+            )
+          }[this.state.currentView || 'dates']}
         </table>
       </div>
     );

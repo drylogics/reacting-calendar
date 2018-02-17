@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import Calendar, { Header, CalendarDays } from '../src/components/Calendar';
+import Calendar, { Header, CalendarDays, CalendarMonths, CalendarYears } from '../src/components/Calendar';
 import moment from 'moment/moment';
 import sinon from 'sinon';
 
@@ -185,10 +185,28 @@ describe('Calendar', () => {
     expect(wrapper.find('label').text()).to.equal("Start Date");
   });
 
-  it('should display calendar header', () =>{
+  it('should pass props correctly to Header', () =>{
     const wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-05-05'/>);
     expect(wrapper.find('Header')).to.have.prop('month').deep.equal(4)
     expect(wrapper.find('Header')).to.have.prop('year').deep.equal(2017)
+  });
+
+  it('should pass props correctly to CalendarDays', () =>{
+    const wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-05-05'/>);
+    expect(wrapper.find('CalendarDays')).to.have.prop('selectedDate').deep.equal(mayFifth)
+    expect(wrapper.find('CalendarDays')).to.have.prop('visibleDate').deep.equal(mayFifth)
+  });
+
+  it('should pass props correctly to CalendarMonths', () =>{
+    const wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-05-05' currentView='months'/>);
+    expect(wrapper.find('CalendarMonths')).to.have.prop('selectedDate').deep.equal(mayFifth)
+    expect(wrapper.find('CalendarMonths')).to.have.prop('visibleDate').deep.equal(mayFifth)
+  });
+
+  it('should pass props correctly to CalendarYears', () =>{
+    const wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-05-05' currentView='years'/>);
+    expect(wrapper.find('CalendarYears')).to.have.prop('selectedDate').deep.equal(mayFifth)
+    expect(wrapper.find('CalendarYears')).to.have.prop('visibleDate').deep.equal(mayFifth)
   });
 
   it('should display calendar days', () =>{
@@ -211,7 +229,6 @@ describe('Calendar', () => {
     expect(wrapper.find('th.datepicker-switch').text()).to.equal('December 2016');
   });
 
-
   it('should show next month on right navigation' , () => {
     const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05'/>);
     expect(wrapper.find('th.datepicker-switch').text()).to.equal('December 2017');
@@ -225,39 +242,37 @@ describe('Calendar', () => {
     next.simulate('click');
     expect(wrapper.find('th.datepicker-switch').text()).to.equal('May 2018');
   });
+});
 
-  // it('should display selected date by default', () =>{
-  //   const wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-12-05'/>);
-  //   wrapper.simulate('load');
-  //   expect(wrapper.state().visibleDate).to.deep.equal(moment('2017-12-05'))
-  //   // let dates = wrapper.find('td.day').map((td)=> td.text())
-  //   // let expectedDates = [ 
-  //   //   '26','27','28','29','30','01','02',
-  //   //   '03','04','05','06','07','08','09',
-  //   //   '10','11','12','13','14','15','16',
-  //   //   '17','18','19','20','21','22','23',
-  //   //   '24','25','26','27','28','29','30',
-  //   //   '31','01','02','03','04','05','06'
-  //   // ]
-  //   // expect(dates).to.deep.equal(expectedDates)
-  // });
 
-  // it('should set visible date to previous month when left arrrow is clicked', () =>{
-  //   const wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-12-05'/>);
-  //   expect(wrapper.state().visibleDate).to.deep.equal(moment('2017-12-05'))
-  //   let previous = wrapper.find('th.prev')
-  //   previous.simulate('click');
-  //   wrapper.update();
-  //   expect(wrapper.state().visibleDate).to.deep.equal(moment('2017-11-01'))
-  // });
+describe('Calendar View', ()=>{
+
+  it('should display CalendarDays when currentView is not given', () =>{
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05'/>);
+    expect(wrapper.find('CalendarDays')).to.have.length(1)
+  })
+
+  it('should display CalendarDays when currentView is dates', () =>{
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05' currentView='dates'/>);
+    expect(wrapper.find('CalendarDays')).to.have.length(1)
+  })
+
+  it('should display CalendarMonths when currentView is months', () =>{
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05' currentView='months'/>);
+    expect(wrapper.find('CalendarMonths')).to.have.length(1)
+  })
+
+  it('should display CalendarYears when currentView is years', () =>{
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05' currentView='years'/>);
+    expect(wrapper.find('CalendarYears')).to.have.length(1)    
+  })
 });
 
 describe('CalendarDays', ()=>{
-  let mayFifth = moment('2017-05-05').startOf('day')
-  let today = moment('2017-05-05').startOf('day')
-  const wrapper = mount(<CalendarDays visibleDate={mayFifth} selectedDate={today}/>);
+  let decemberFifth = moment('2017-12-05').startOf('day')
+  let today = moment().startOf('day')
+  const wrapper = mount(<CalendarDays visibleDate={decemberFifth} selectedDate={today}/>);
 
-  
   it('should have correct number of date rows and cells', ()=>{
     let dates = wrapper.find('td.day')
     expect(wrapper.find('tr')).to.have.length(6);
@@ -265,5 +280,63 @@ describe('CalendarDays', ()=>{
       expect(row.find('td.day')).to.have.length(7);
     })
     expect(wrapper.find('tr td.day')).to.have.length(42);
+  });
+
+  it('should display dates of month of visibleDate', () =>{
+    let dates = wrapper.find('td.day').map((td)=> td.text())
+    let expectedDates = [ 
+      '26','27','28','29','30','01','02',
+      '03','04','05','06','07','08','09',
+      '10','11','12','13','14','15','16',
+      '17','18','19','20','21','22','23',
+      '24','25','26','27','28','29','30',
+      '31','01','02','03','04','05','06'
+    ]
+    expect(dates).to.deep.equal(expectedDates)
+  });
+});
+
+
+describe('CalendarMonths', ()=>{
+  let decemberFifth = moment('2017-12-05').startOf('day')
+  let today = moment().startOf('day')
+  let wrapper = mount(<CalendarMonths visibleDate={decemberFifth} selectedDate={today}/>);
+
+  it('should have correct number of month rows and cells', ()=>{
+    let months = wrapper.find('span.month')
+    expect(months).to.have.length(12);
+    expect(months.map((mn)=> mn.text())).to.deep.equal(['Jan', 'Feb', 'Mar', 'Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']);
+  });
+
+  it('should highlight month of selected date only', () =>{
+    wrapper = mount(<CalendarMonths visibleDate={decemberFifth} selectedDate={decemberFifth}/>);
+    expect(wrapper.find('tr td span.month.active')).to.have.length(1)
+    expect(wrapper.find('tr td span.month.active').first().text()).to.equal('Dec')    
+  });
+});
+
+describe('CalendarYears', ()=>{
+  let decemberFifth = moment('2017-12-05').startOf('day')
+  let today = moment().startOf('day')
+  let wrapper = mount(<CalendarYears visibleDate={decemberFifth} selectedDate={today}/>);
+
+  it('should have correct number of year rows and cells', ()=>{
+    let years = wrapper.find('span.year')
+    expect(years).to.have.length(12);
+    expect(years.map((yr)=> yr.text())).to.deep.equal(['2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020']);
+  });
+
+  it('should active-highlight year of selected date only', () =>{
+    wrapper = mount(<CalendarYears visibleDate={decemberFifth} selectedDate={decemberFifth}/>);
+    expect(wrapper.find('span.year.active')).to.have.length(1)
+    expect(wrapper.find('span.year.active').first().text()).to.equal('2017')    
+  });
+
+  it('should clickable-highlight year of current decade only', () =>{
+    wrapper = mount(<CalendarYears visibleDate={decemberFifth} selectedDate={decemberFifth}/>);
+    expect(wrapper.find('span.year.old')).to.have.length(1)
+    expect(wrapper.find('span.year.old').first().text()).to.equal('2009')
+    expect(wrapper.find('span.year.new')).to.have.length(1)
+    expect(wrapper.find('span.year.new').first().text()).to.equal('2020')    
   });
 });
