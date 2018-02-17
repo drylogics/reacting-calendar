@@ -185,5 +185,32 @@ describe('Calendar', () => {
     expect(wrapper.find('th.datepicker-switch').text()).to.contain('May 2018');
   });
 
+  it('should display weeks', () => {
+  });
+
+  it('should display days', () => {
+  });
+
+  it('should highligh current day', () => {
+  });
+
+  it('should disable prv,next month days', () => {
+  });
+
+  it('should highligh last 7 days', () => {
+  });
+
+  it('clicking month shold display months', () => {
+  });
+
+  it('clicking year shold display years', () => {
+  });
+
+  it('should display months by clicking year', () => {
+  });
+
+  it('should display correct days by clicking month', () => {
+  });
+
 
 });

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import moment from 'moment';
+import { Days } from './Days';
 
 
 export class Calendar extends Component {
@@ -33,7 +34,17 @@ export class Calendar extends Component {
               <th colspan="5" className="datepicker-switch">{this.state.selectedMonth.format('MMMM YYYY')}</th>
               <th onClick={this.next.bind(this)} className="next">»</th>
             </tr>
+            <tr>
+              <th class="dow">Su</th>
+              <th class="dow">Mo</th>
+              <th class="dow">Tu</th>
+              <th class="dow">We</th>
+              <th class="dow">Th</th>
+              <th class="dow">Fr</th>
+              <th class="dow">Sa</th>
+            </tr>
           </thead>
+          <Days />
         </table>
       </div>
     );
