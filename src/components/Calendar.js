@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import moment from 'moment';
 import { Days } from './Days';
+import { Months } from './Months';
+import { Years } from './Years';
 
 
 export class Calendar extends Component {
@@ -40,7 +42,7 @@ export class Calendar extends Component {
 
     return(
       <div>
-        <label>{this.props.name}</label>
+        <label>Start Date:</label>
         <table class="table-condensed">
           <thead>
             <tr>
