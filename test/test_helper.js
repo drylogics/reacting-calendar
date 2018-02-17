@@ -1,6 +1,12 @@
 import jsdom from 'jsdom';
 import chai from 'chai';
 import { expect } from 'chai';
+import sinon from 'sinon';
+
+import { configure } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+
+configure({ adapter: new Adapter() });
 
 import chaiEnzyme from 'chai-enzyme'
 chai.use(chaiEnzyme())
