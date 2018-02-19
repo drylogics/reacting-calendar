@@ -86,9 +86,9 @@ export class Calendar extends Component {
         <table class="table-condensed">
           <thead>
             <tr>
-              <th onClick={this.previous.bind(this)} className="prev">«</th>
-              <th onClick={this.changeState.bind(this)} className="datepicker-switch">{this.state.datepickerLabel}</th>
-              <th onClick={this.next.bind(this)} className="next">»</th>
+              <th colSpan={2} onClick={this.previous.bind(this)} className="prev">«</th>
+              <th colSpan={3} onClick={this.changeState.bind(this)} className="datepicker-switch">{this.state.datepickerLabel}</th>
+              <th colSpan={2} onClick={this.next.bind(this)} className="next">»</th>
             </tr>
             <tr>
               <th class="dow">Su</th>
