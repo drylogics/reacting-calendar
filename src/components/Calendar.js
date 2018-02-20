@@ -8,24 +8,33 @@ const moment = extendMoment(Moment);
 export const Header = (props) => {
   let {year, month, onPrevious, onNext, onChangeView, currentView, ...otherProps} = props
   let visibleDate = moment({y: year, M:month, d: 1})
-  
+  let dayLabels = () => {
+    if(currentView == 'dates')
+      return(<tr>
+        <th colSpan="1" className="dow" >SU</th>
+        <th colSpan="1" className="dow" >MO</th>
+        <th colSpan="1" className="dow" >TU</th>
+        <th colSpan="1" className="dow" >WE</th>
+        <th colSpan="1" className="dow" >TH</th>
+        <th colSpan="1" className="dow" >FR</th>
+        <th colSpan="1" className="dow" >SA</th>
+      </tr>)
+    else{
+      return null
+    }
+  }
+
   return (
-  <thead>
-    <tr>
-      <th onClick={onPrevious} colSpan={1} className="prev" ><input type="button" value="«"/></th>
-      <th colSpan="5" onClick={onChangeView} className="datepicker-switch">{visibleDate.format('MMMM YYYY')}</th>
-      <th onClick={onNext} colSpan="1" className="next" ><input type="button" value="»"/></th>
-    </tr>
-    <tr>
-      <th colSpan="1" className="dow" >SU</th>
-      <th colSpan="1" className="dow" >MO</th>
-      <th colSpan="1" className="dow" >TU</th>
-      <th colSpan="1" className="dow" >WE</th>
-      <th colSpan="1" className="dow" >TH</th>
-      <th colSpan="1" className="dow" >FR</th>
-      <th colSpan="1" className="dow" >SA</th>
-    </tr>
-  </thead>
+    <thead>
+      <tr>
+        <th onClick={onPrevious} colSpan={1} className="prev" ><input type="button" value="«"/></th>
+        <th colSpan="5" onClick={onChangeView} className="datepicker-switch">{visibleDate.format('MMMM YYYY')}</th>
+        <th onClick={onNext} colSpan="1" className="next" ><input type="button" value="»"/></th>
+      </tr>
+      {
+        dayLabels()
+      }
+    </thead>
   )
 }
 
@@ -67,20 +76,35 @@ export const CalendarDays = (props) => {
 
 export const CalendarMonths = (props) => {
   let {visibleDate, selectedDate, ...otherProps} = props
-  let month = visibleDate.month()
+  let calculateClass = monthName => ((selectedDate.format('MMM') === monthName) ? 'month active' : 'month')
   return(
     <tbody>
       <tr>
         <td colSpan={7}>
-        {
-          moment.monthsShort().map(monthName => {
-            return(
-              <span className={(selectedDate.format('MMM') === monthName) ? 'month active' : 'month'}>
-                {monthName}
-              </span>
-            )
-          })
-        }
+          <span className={calculateClass('Jan')}>Jan</span>
+          <span className={calculateClass('Feb')}>Feb</span>
+          <span className={calculateClass('Mar')}>Mar</span>
+        </td>
+      </tr>
+      <tr>
+        <td colSpan={7}>
+          <span className={calculateClass('Apr')}>Apr</span>
+          <span className={calculateClass('May')}>May</span>
+          <span className={calculateClass('Jun')}>Jun</span>
+        </td>
+      </tr>
+      <tr>
+        <td colSpan={7}>
+          <span className={calculateClass('Jul')}>Jul</span>
+          <span className={calculateClass('Aug')}>Aug</span>
+          <span className={calculateClass('Sep')}>Sep</span>
+        </td>
+      </tr>
+      <tr>
+      <td colSpan={7}>
+          <span className={calculateClass('Oct')}>Oct</span>
+          <span className={calculateClass('Nov')}>Nov</span>
+          <span className={calculateClass('Dec')}>Dec</span>
         </td>
       </tr>
     </tbody>
@@ -89,31 +113,28 @@ export const CalendarMonths = (props) => {
 
 export const CalendarYears = (props) => {
   let {visibleDate, selectedDate, ...otherProps} = props
+  let selectedYear = selectedDate.year()
   let activeYear = visibleDate.year()
   let startOfDecade = activeYear - (activeYear % 10)
   let spanHtmlClass = ''
+  let years = _.range(startOfDecade -1, startOfDecade + 11).map((yr, index) => {
+    if(yr < startOfDecade){
+      spanHtmlClass = 'year old'
+    }else if(yr < startOfDecade + 10){
+      spanHtmlClass = (selectedYear === yr) ? 'year active' : 'year'
+    }else{
+      spanHtmlClass = 'year new'
+    }
+    return(<span key={index} className={spanHtmlClass}>{yr}</span>)
+  })
   return(
     <tbody>
-      <tr>
-        <td colSpan={7}>
-        {
-          _.range(startOfDecade - 1, startOfDecade + 11 ).map(year => {
-            if(year < startOfDecade){
-              spanHtmlClass = 'year old'
-            }else if(year < startOfDecade + 10){
-              spanHtmlClass = (selectedDate.year() === year) ? 'year active' : 'year'
-            }else{
-              spanHtmlClass = 'year new'
-            }
-            return(
-              <span className={spanHtmlClass}>
-                {year}
-              </span>
-            )
-          })
-        }
-        </td>
-      </tr>
+    {
+      _.chain(years)
+      .chunk(4)
+      .map((arr, index) => <tr key={index}><td colSpan={7} key={index}>{arr}</td></tr>)
+      .value()
+    }
     </tbody>
   )
 }

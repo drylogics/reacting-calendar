@@ -148,7 +148,7 @@ describe('Header', () => {
   let year = mayFifth.year();
   let onNext = sinon.spy();
   let onPrevious = sinon.spy();
-  const wrapper = shallow(<Header month={month} year={year} onNext={onNext} onPrevious={onPrevious} />);
+  let wrapper = shallow(<Header month={month} year={year} onNext={onNext} onPrevious={onPrevious} />);
 
   it('should display month and year' , () => {
     expect(wrapper.find('th.datepicker-switch').text()).to.equal(mayFifth.format('MMMM YYYY'));
@@ -158,9 +158,20 @@ describe('Header', () => {
     expect(wrapper.find('th.datepicker-switch').text()).to.equal('May 2017');
   });
 
-  it('should display weekday labels in header', () => {
+  it('should display weekday labels in header for days selection', () => {
+    let wrapper = shallow(<Header month={month} year={year} onNext={onNext} onPrevious={onPrevious} currentView='dates'/>);
     expect(wrapper.find('th.dow')).to.have.length(7);
     expect(wrapper.find('th.dow').map((th)=> th.text())).to.deep.equal(['SU','MO','TU','WE','TH','FR','SA']);    
+  });
+
+  it('should not display weekday labels in header for months selection', () => {
+    let wrapper = shallow(<Header month={month} year={year} onNext={onNext} onPrevious={onPrevious} currentView='months'/>);
+    expect(wrapper.find('th.dow')).to.have.length(0);
+  });
+
+  it('should not display weekday labels in header for years selection', () => {
+    let wrapper = shallow(<Header month={month} year={year} onNext={onNext} onPrevious={onPrevious} currentView='years'/>);
+    expect(wrapper.find('th.dow')).to.have.length(0);
   });
 
   it('should trigger previous' , () => {
@@ -174,6 +185,7 @@ describe('Header', () => {
     previous.simulate('click');
     expect(onNext.calledOnce).to.be.true
   });
+
 });
 
 describe('Calendar', () => {
@@ -310,8 +322,8 @@ describe('CalendarMonths', ()=>{
 
   it('should highlight month of selected date only', () =>{
     wrapper = mount(<CalendarMonths visibleDate={decemberFifth} selectedDate={decemberFifth}/>);
-    expect(wrapper.find('tr td span.month.active')).to.have.length(1)
-    expect(wrapper.find('tr td span.month.active').first().text()).to.equal('Dec')    
+    expect(wrapper.find('span.month.active')).to.have.length(1)
+    expect(wrapper.find('span.month.active').first().text()).to.equal('Dec')    
   });
 });
 
