@@ -32,9 +32,9 @@ export const Header = (props) => {
   return (
     <thead>
       <tr>
-        <th onClick={onPrevious} colSpan={1} className="prev" ><input type="button" value="«"/></th>
+        <th onClick={onPrevious} colSpan={1} className="prev" >«</th>
         <th colSpan="5" onClick={onChangeView} className="datepicker-switch">{headerText()}</th>
-        <th onClick={onNext} colSpan="1" className="next" ><input type="button" value="»"/></th>
+        <th onClick={onNext} colSpan="1" className="next" >»</th>
       </tr>
       { showDaysLabel ?  dayLabels : null }
     </thead>
@@ -81,8 +81,10 @@ export const CalendarDays = (props) => {
 
 export const CalendarMonths = (props) => {
   let {visibleDate, selectedDate, handleClick, ...otherProps} = props
-  let calculateClass = monthName => ((selectedDate.format('MMM') === monthName) ? 'month active' : 'month')
   let visibleYear = visibleDate.year()
+  let selectedYear = selectedDate.year()
+  debugger;
+  let calculateClass = monthName => ((`${monthName} ${visibleYear}` === selectedDate.format('MMM YYYY')) ? 'month active' : 'month')
 
   return(
     <tbody>
@@ -91,24 +93,20 @@ export const CalendarMonths = (props) => {
           <span onClick={handleClick} className={calculateClass('Jan')} id={`${visibleYear}-01`}>Jan</span>
           <span onClick={handleClick} className={calculateClass('Feb')} id={`${visibleYear}-02`}>Feb</span>
           <span onClick={handleClick} className={calculateClass('Mar')} id={`${visibleYear}-03`}>Mar</span>
+          <span onClick={handleClick} className={calculateClass('Apr')} id={`${visibleYear}-04`}>Apr</span>
         </td>
       </tr>
       <tr>
         <td colSpan={7}>
-          <span onClick={handleClick} className={calculateClass('Apr')} id={`${visibleYear}-04`}>Apr</span>
           <span onClick={handleClick} className={calculateClass('May')} id={`${visibleYear}-05`}>May</span>
           <span onClick={handleClick} className={calculateClass('Jun')} id={`${visibleYear}-06`}>Jun</span>
-        </td>
-      </tr>
-      <tr>
-        <td colSpan={7}>
           <span onClick={handleClick} className={calculateClass('Jul')} id={`${visibleYear}-07`}>Jul</span>
           <span onClick={handleClick} className={calculateClass('Aug')} id={`${visibleYear}-08`}>Aug</span>
-          <span onClick={handleClick} className={calculateClass('Sep')} id={`${visibleYear}-09`}>Sep</span>
         </td>
       </tr>
       <tr>
       <td colSpan={7}>
+          <span onClick={handleClick} className={calculateClass('Sep')} id={`${visibleYear}-09`}>Sep</span>
           <span onClick={handleClick} className={calculateClass('Oct')} id={`${visibleYear}-10`}>Oct</span>
           <span onClick={handleClick} className={calculateClass('Nov')} id={`${visibleYear}-11`}>Nov</span>
           <span onClick={handleClick} className={calculateClass('Dec')} id={`${visibleYear}-12`}>Dec</span>
