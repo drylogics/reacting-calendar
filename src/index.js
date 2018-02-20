@@ -5,4 +5,4 @@ import Calendar from './components/Calendar'
 
 const target = document.querySelector('#root')
 
-render( <Calendar />, target)
+render( <Calendar name='Select Date:' />, target)

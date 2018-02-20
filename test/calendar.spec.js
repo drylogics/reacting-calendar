@@ -329,7 +329,6 @@ describe('Calendar Navigation', () => {
 })
 
 describe('Calendar View', ()=>{
-
   it('should display CalendarDays when currentView is not given', () =>{
     const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05'/>);
     expect(wrapper.find('CalendarDays')).to.have.length(1)
@@ -348,6 +347,41 @@ describe('Calendar View', ()=>{
   it('should display CalendarYears when currentView is years', () =>{
     const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05' currentView='years'/>);
     expect(wrapper.find('CalendarYears')).to.have.length(1)    
+  })
+
+  it('should change currentView to months when header is clicked during days view', () =>{
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05' currentView='dates'/>);
+    let previous = wrapper.find('th.datepicker-switch')
+    previous.simulate('click');
+    expect(wrapper.find('CalendarMonths')).to.have.length(1)
+  })
+
+  it('should change currentView to years when header is clicked during months view', () =>{
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05' currentView='months'/>);
+    let previous = wrapper.find('th.datepicker-switch')
+    previous.simulate('click');
+    expect(wrapper.find('CalendarYears')).to.have.length(1)
+  })
+
+  it('should change currentView to months when year is clicked during years view', () =>{
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05' currentView='years'/>);
+    let previous = wrapper.find('span.year').first()
+    previous.simulate('click');
+    expect(wrapper.find('CalendarMonths')).to.have.length(1)
+  })
+
+  it('should change currentView to days when month is clicked during months view', () =>{
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05' currentView='months'/>);
+    let previous = wrapper.find('span.month').first()
+    previous.simulate('click');
+    expect(wrapper.find('CalendarDays')).to.have.length(1)
+  })
+
+  it('should set selectedDate when day is clicked during days view', () =>{
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05' currentView='dates'/>);
+    let previous = wrapper.find('td.day').first()
+    previous.simulate('click');
+    expect(wrapper.find('td.day.active').text()).to.equal('26')
   })
 });
 

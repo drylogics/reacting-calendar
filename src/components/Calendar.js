@@ -42,12 +42,13 @@ export const Header = (props) => {
 }
 
 export const CalendarDays = (props) => {
-  let {visibleDate, selectedDate, ...otherProps} = props
+  let {visibleDate, selectedDate, handleClick, ...otherProps} = props
   let startOfMonth = visibleDate.clone().startOf('month')
   let startDate = (startOfMonth.day() === 0) ? startOfMonth.clone().weekday(-7) : startOfMonth.clone().startOf('week')
   let endDate = startDate.clone().add(41, 'days')
   let range = moment.range(startDate, endDate)
   let tdHtmlClass = ''
+  let dateString = ''
   let dates = Array.from(range.by('day')).map((dt) => { 
     if(dt.isBefore(visibleDate, 'month')){
       tdHtmlClass = 'day old'
@@ -58,8 +59,9 @@ export const CalendarDays = (props) => {
     }else{
       tdHtmlClass = 'day'
     }
+    dateString = dt.format('YYYY-MM-DD')
     return(
-      <td key={dt.format('DD-MM')} className={tdHtmlClass} value={dt}>
+      <td key={dateString} onClick={handleClick} className={tdHtmlClass} id={dateString}>
         {dt.format('DD')}
       </td>
     )
@@ -78,36 +80,38 @@ export const CalendarDays = (props) => {
 } 
 
 export const CalendarMonths = (props) => {
-  let {visibleDate, selectedDate, ...otherProps} = props
+  let {visibleDate, selectedDate, handleClick, ...otherProps} = props
   let calculateClass = monthName => ((selectedDate.format('MMM') === monthName) ? 'month active' : 'month')
+  let visibleYear = visibleDate.year()
+
   return(
     <tbody>
       <tr>
         <td colSpan={7}>
-          <span className={calculateClass('Jan')}>Jan</span>
-          <span className={calculateClass('Feb')}>Feb</span>
-          <span className={calculateClass('Mar')}>Mar</span>
+          <span onClick={handleClick} className={calculateClass('Jan')} id={`${visibleYear}-01`}>Jan</span>
+          <span onClick={handleClick} className={calculateClass('Feb')} id={`${visibleYear}-02`}>Feb</span>
+          <span onClick={handleClick} className={calculateClass('Mar')} id={`${visibleYear}-03`}>Mar</span>
         </td>
       </tr>
       <tr>
         <td colSpan={7}>
-          <span className={calculateClass('Apr')}>Apr</span>
-          <span className={calculateClass('May')}>May</span>
-          <span className={calculateClass('Jun')}>Jun</span>
+          <span onClick={handleClick} className={calculateClass('Apr')} id={`${visibleYear}-04`}>Apr</span>
+          <span onClick={handleClick} className={calculateClass('May')} id={`${visibleYear}-05`}>May</span>
+          <span onClick={handleClick} className={calculateClass('Jun')} id={`${visibleYear}-06`}>Jun</span>
         </td>
       </tr>
       <tr>
         <td colSpan={7}>
-          <span className={calculateClass('Jul')}>Jul</span>
-          <span className={calculateClass('Aug')}>Aug</span>
-          <span className={calculateClass('Sep')}>Sep</span>
+          <span onClick={handleClick} className={calculateClass('Jul')} id={`${visibleYear}-07`}>Jul</span>
+          <span onClick={handleClick} className={calculateClass('Aug')} id={`${visibleYear}-08`}>Aug</span>
+          <span onClick={handleClick} className={calculateClass('Sep')} id={`${visibleYear}-09`}>Sep</span>
         </td>
       </tr>
       <tr>
       <td colSpan={7}>
-          <span className={calculateClass('Oct')}>Oct</span>
-          <span className={calculateClass('Nov')}>Nov</span>
-          <span className={calculateClass('Dec')}>Dec</span>
+          <span onClick={handleClick} className={calculateClass('Oct')} id={`${visibleYear}-10`}>Oct</span>
+          <span onClick={handleClick} className={calculateClass('Nov')} id={`${visibleYear}-11`}>Nov</span>
+          <span onClick={handleClick} className={calculateClass('Dec')} id={`${visibleYear}-12`}>Dec</span>
         </td>
       </tr>
     </tbody>
@@ -115,7 +119,7 @@ export const CalendarMonths = (props) => {
 }
 
 export const CalendarYears = (props) => {
-  let {visibleDate, selectedDate, ...otherProps} = props
+  let {visibleDate, selectedDate, handleClick, ...otherProps} = props
   let selectedYear = selectedDate.year()
   let activeYear = visibleDate.year()
   let startOfDecade = activeYear - (activeYear % 10)
@@ -128,7 +132,7 @@ export const CalendarYears = (props) => {
     }else{
       spanHtmlClass = 'year new'
     }
-    return(<span key={index} className={spanHtmlClass}>{yr}</span>)
+    return(<span key={index} onClick={handleClick} className={spanHtmlClass} id={yr}>{yr}</span>)
   })
   return(
     <tbody>
@@ -154,6 +158,29 @@ export default class Calendar extends Component {
       currentView: currentView,
       showDaysLabel: showDaysLabel
     };
+  }
+
+  selectDay = (e) => {
+    let date = moment(e.target.id, 'YYYY-MM-DD')
+    this.setState({
+      visibleDate: date,
+      selectedDate: date,
+      currentView: 'dates'
+    })
+  }
+
+  selectMonth = (e) => {
+    this.setState({
+      visibleDate: moment(e.target.id, 'YYYY-MM'),
+      currentView: 'dates'
+    })
+  }
+
+  selectYear = (e) => {
+    this.setState({
+      visibleDate: moment(e.target.id, 'YYYY'),
+      currentView: 'months'
+    })
   }
 
   previous = () => {
@@ -237,13 +264,13 @@ export default class Calendar extends Component {
           />
           {{
             'months':(
-              <CalendarMonths visibleDate={this.state.visibleDate} selectedDate={this.state.selectedDate}/>
+              <CalendarMonths visibleDate={this.state.visibleDate} selectedDate={this.state.selectedDate} handleClick={this.selectMonth}/>
             ),
             'years':(
-              <CalendarYears visibleDate={this.state.visibleDate} selectedDate={this.state.selectedDate}/>
+              <CalendarYears visibleDate={this.state.visibleDate} selectedDate={this.state.selectedDate} handleClick={this.selectYear}/>
             ),
             'dates':(
-              <CalendarDays visibleDate={this.state.visibleDate} selectedDate={this.state.selectedDate} />
+              <CalendarDays visibleDate={this.state.visibleDate} selectedDate={this.state.selectedDate} handleClick={this.selectDay}/>
             )
           }[this.state.currentView || 'dates']}
         </table>
