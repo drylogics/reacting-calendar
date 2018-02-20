@@ -25,7 +25,7 @@ echo "8.2.1" > ~/.nvmrc
 ## Project Setup
 ```
 git clone git@github.com:drylogics/reacting-calendar.git
-cd ~/git/reacting-calendar/
+cd reacting-calendar/
 nvm install 8.2.1
 nvm use 8.2.1
 npm install -g npm@latest
