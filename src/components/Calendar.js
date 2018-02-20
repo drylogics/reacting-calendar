@@ -156,7 +156,7 @@ export default class Calendar extends Component {
     };
   }
 
-  previous() {
+  previous = () => {
     switch(this.state.currentView){
       case 'months':
         let previousYearDate = this.state.visibleDate.clone().startOf('year').subtract(1,'year')
@@ -180,7 +180,7 @@ export default class Calendar extends Component {
     }
   }
   
-  next() {
+  next = () => {
     switch(this.state.currentView){
       case 'months':
         let nextYearDate = this.state.visibleDate.clone().startOf('year').add(1,'year')
@@ -204,7 +204,7 @@ export default class Calendar extends Component {
     }
   }
  
-  changeView() {
+  changeView = () => {
     let viewToBeChanged = ''
     switch(this.state.currentView){
       case 'dates':
@@ -229,9 +229,9 @@ export default class Calendar extends Component {
         <table className="table-condensed">
           <Header 
             visibleDate={this.state.visibleDate} 
-            onPrevious={this.previous.bind(this)} 
-            onNext={this.next.bind(this)}
-            onChangeView={this.changeView.bind(this)}
+            onPrevious={this.previous} 
+            onNext={this.next}
+            onChangeView={this.changeView}
             currentView={this.state.currentView}
             showDaysLabel={this.state.showDaysLabel}
           />
@@ -251,13 +251,3 @@ export default class Calendar extends Component {
     );
   }
 }
-
-// export class Calendar extends Component {
-//   constructor(props) {
-//     super(props);
-//   }
-
-//   render() {
-//     return <label>hi</label> 
-//   }
-// }
