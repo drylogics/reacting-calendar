@@ -6,34 +6,37 @@ import _ from 'lodash';
 const moment = extendMoment(Moment);
 
 export const Header = (props) => {
-  let {year, month, onPrevious, onNext, onChangeView, currentView, ...otherProps} = props
-  let visibleDate = moment({y: year, M:month, d: 1})
-  let dayLabels = () => {
-    if(currentView == 'dates')
-      return(<tr>
-        <th colSpan="1" className="dow" >SU</th>
-        <th colSpan="1" className="dow" >MO</th>
-        <th colSpan="1" className="dow" >TU</th>
-        <th colSpan="1" className="dow" >WE</th>
-        <th colSpan="1" className="dow" >TH</th>
-        <th colSpan="1" className="dow" >FR</th>
-        <th colSpan="1" className="dow" >SA</th>
-      </tr>)
-    else{
-      return null
+  let {visibleDate, onPrevious, onNext, onChangeView, currentView, showDaysLabel, ...otherProps} = props
+  let headerText = () => {
+    if(currentView == 'dates'){
+      return visibleDate.format('MMMM YYYY')
+    }else if(currentView == 'months'){
+      return visibleDate.format('YYYY')
+    }else{
+      let year = visibleDate.year()
+      let startOfDecade = year - (year % 10)
+      return `${startOfDecade} - ${startOfDecade + 9}` 
     }
   }
+
+  let dayLabels = (<tr>
+    <th colSpan="1" className="dow" >SU</th>
+    <th colSpan="1" className="dow" >MO</th>
+    <th colSpan="1" className="dow" >TU</th>
+    <th colSpan="1" className="dow" >WE</th>
+    <th colSpan="1" className="dow" >TH</th>
+    <th colSpan="1" className="dow" >FR</th>
+    <th colSpan="1" className="dow" >SA</th>
+  </tr>)
 
   return (
     <thead>
       <tr>
         <th onClick={onPrevious} colSpan={1} className="prev" ><input type="button" value="«"/></th>
-        <th colSpan="5" onClick={onChangeView} className="datepicker-switch">{visibleDate.format('MMMM YYYY')}</th>
+        <th colSpan="5" onClick={onChangeView} className="datepicker-switch">{headerText()}</th>
         <th onClick={onNext} colSpan="1" className="next" ><input type="button" value="»"/></th>
       </tr>
-      {
-        dayLabels()
-      }
+      { showDaysLabel ?  dayLabels : null }
     </thead>
   )
 }
@@ -144,28 +147,61 @@ export default class Calendar extends Component {
     super(props);
     let selectedDate = (props.selectedDate ? moment(props.selectedDate) : moment()).startOf('day');
     let currentView = props.currentView ? props.currentView : 'dates'
+    let showDaysLabel = (currentView === 'dates')
     this.state = {
       selectedDate: selectedDate,
-      selectedMonth: selectedDate.clone().startOf('month'),
       visibleDate: selectedDate,
-      currentView: currentView
+      currentView: currentView,
+      showDaysLabel: showDaysLabel
     };
   }
 
   previous() {
-    let previousMonth = this.state.selectedMonth.clone().subtract(1,'months')
-    this.setState({
-      selectedMonth: previousMonth,
-      visibleDate: previousMonth.clone().startOf('month')
-    });
+    switch(this.state.currentView){
+      case 'months':
+        let previousYearDate = this.state.visibleDate.clone().startOf('year').subtract(1,'year')
+        this.setState({
+          visibleDate: previousYearDate,
+        })
+        break;
+      case 'years':
+        let activeYear = this.state.visibleDate.year()
+        let startOfDecade = activeYear - (activeYear % 10)
+        let previousDecadeDate = moment(startOfDecade - 10, 'YYYY')
+        this.setState({
+          visibleDate: previousDecadeDate,
+        })  
+        break;
+      default:
+        let previousMonthDate = this.state.visibleDate.clone().startOf('month').subtract(1,'months')
+        this.setState({
+          visibleDate: previousMonthDate,
+        })
+    }
   }
   
   next() {
-    let nextMonth = this.state.selectedMonth.clone().add(1,'months')
-    this.setState({
-      selectedMonth: nextMonth,
-      visibleDate: nextMonth.clone().startOf('month')
-    });
+    switch(this.state.currentView){
+      case 'months':
+        let nextYearDate = this.state.visibleDate.clone().startOf('year').add(1,'year')
+        this.setState({
+          visibleDate: nextYearDate,
+        })
+        break;
+      case 'years':
+        let activeYear = this.state.visibleDate.year()
+        let startOfDecade = activeYear - (activeYear % 10)
+        let nextDecadeDate = moment(startOfDecade + 10, 'YYYY')
+        this.setState({
+          visibleDate: nextDecadeDate,
+        })  
+        break;
+      default:
+        let nextMonthDate = this.state.visibleDate.clone().startOf('month').add(1,'months')
+        this.setState({
+          visibleDate: nextMonthDate,
+        })
+    }
   }
  
   changeView() {
@@ -181,7 +217,8 @@ export default class Calendar extends Component {
         viewToBeChanged = 'years'
     }
     this.setState({
-      currentView: viewToBeChanged
+      currentView: viewToBeChanged,
+      showDaysLabel: (viewToBeChanged === 'dates')
     })
   }
 
@@ -191,12 +228,12 @@ export default class Calendar extends Component {
         <label>{this.props.name}</label>
         <table className="table-condensed">
           <Header 
-            year={this.state.visibleDate.year()} 
-            month={this.state.visibleDate.month()} 
+            visibleDate={this.state.visibleDate} 
             onPrevious={this.previous.bind(this)} 
             onNext={this.next.bind(this)}
             onChangeView={this.changeView.bind(this)}
             currentView={this.state.currentView}
+            showDaysLabel={this.state.showDaysLabel}
           />
           {{
             'months':(

@@ -148,7 +148,7 @@ describe('Header', () => {
   let year = mayFifth.year();
   let onNext = sinon.spy();
   let onPrevious = sinon.spy();
-  let wrapper = shallow(<Header month={month} year={year} onNext={onNext} onPrevious={onPrevious} />);
+  let wrapper = shallow(<Header visibleDate={mayFifth} onNext={onNext} onPrevious={onPrevious} currentView='dates'/>);
 
   it('should display month and year' , () => {
     expect(wrapper.find('th.datepicker-switch').text()).to.equal(mayFifth.format('MMMM YYYY'));
@@ -159,18 +159,18 @@ describe('Header', () => {
   });
 
   it('should display weekday labels in header for days selection', () => {
-    let wrapper = shallow(<Header month={month} year={year} onNext={onNext} onPrevious={onPrevious} currentView='dates'/>);
+    let wrapper = shallow(<Header visibleDate={mayFifth} onNext={onNext} onPrevious={onPrevious} currentView='dates' showDaysLabel={true}/>);
     expect(wrapper.find('th.dow')).to.have.length(7);
     expect(wrapper.find('th.dow').map((th)=> th.text())).to.deep.equal(['SU','MO','TU','WE','TH','FR','SA']);    
   });
 
   it('should not display weekday labels in header for months selection', () => {
-    let wrapper = shallow(<Header month={month} year={year} onNext={onNext} onPrevious={onPrevious} currentView='months'/>);
+    let wrapper = shallow(<Header visibleDate={mayFifth} onNext={onNext} onPrevious={onPrevious} currentView='months'/>);
     expect(wrapper.find('th.dow')).to.have.length(0);
   });
 
   it('should not display weekday labels in header for years selection', () => {
-    let wrapper = shallow(<Header month={month} year={year} onNext={onNext} onPrevious={onPrevious} currentView='years'/>);
+    let wrapper = shallow(<Header visibleDate={mayFifth} onNext={onNext} onPrevious={onPrevious} currentView='years'/>);
     expect(wrapper.find('th.dow')).to.have.length(0);
   });
 
@@ -199,8 +199,7 @@ describe('Calendar', () => {
 
   it('should pass props correctly to Header', () =>{
     const wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-05-05'/>);
-    expect(wrapper.find('Header')).to.have.prop('month').deep.equal(4)
-    expect(wrapper.find('Header')).to.have.prop('year').deep.equal(2017)
+    expect(wrapper.find('Header')).to.have.prop('visibleDate').deep.equal(mayFifth)
   });
 
   it('should pass props correctly to CalendarDays', () =>{
@@ -226,36 +225,108 @@ describe('Calendar', () => {
     expect(wrapper.find('CalendarDays')).to.have.prop('selectedDate').deep.equal(today)
     expect(wrapper.find('CalendarDays')).to.have.prop('visibleDate').deep.equal(mayFifth)
   });
- 
-  it('should show previous month on left navigation' , () => {
+});
+
+describe('Calendar Navigation', () => {
+  it('should show previous month on left navigation on days view' , () => {
     const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-05-05'/>);
-    expect(wrapper.find('th.datepicker-switch').text()).to.equal('May 2017');
     let previous = wrapper.find('th.prev')
     previous.simulate('click');
     expect(wrapper.find('th.datepicker-switch').text()).to.equal('April 2017');
-    previous.simulate('click');
-    expect(wrapper.find('th.datepicker-switch').text()).to.equal('March 2017');
-    previous.simulate('click');
-    previous.simulate('click');
-    previous.simulate('click');
-    expect(wrapper.find('th.datepicker-switch').text()).to.equal('December 2016');
   });
 
-  it('should show next month on right navigation' , () => {
+  it('should show correct month on navigating left multiple times on days view' , () => {
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-05-05'/>);
+    let previous = wrapper.find('th.prev')
+    previous.simulate('click');
+    previous.simulate('click');
+    previous.simulate('click');
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('February 2017');
+  });
+
+  it('should show next month on right navigation on days view' , () => {
     const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05'/>);
     expect(wrapper.find('th.datepicker-switch').text()).to.equal('December 2017');
     let next = wrapper.find('th.next')
     next.simulate('click');
     expect(wrapper.find('th.datepicker-switch').text()).to.equal('January 2018');
-    next.simulate('click');
-    expect(wrapper.find('th.datepicker-switch').text()).to.equal('February 2018');
-    next.simulate('click');
-    next.simulate('click');
-    next.simulate('click');
-    expect(wrapper.find('th.datepicker-switch').text()).to.equal('May 2018');
   });
-});
 
+  it('should show correct month on navigating right multiple times on days view' , () => {
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05'/>);
+    let next = wrapper.find('th.next')
+    next.simulate('click');
+    next.simulate('click');
+    next.simulate('click');
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('March 2018');
+  });
+
+  it('should show previous year on left navigation on months view' , () => {
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-05-05' currentView='months'/>);
+    let previous = wrapper.find('th.prev')
+    previous.simulate('click');
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('2016');
+  });
+
+  it('should show correct year on navigating left multiple times on months view' , () => {
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-05-05' currentView='months'/>);
+    let previous = wrapper.find('th.prev')
+    previous.simulate('click');
+    previous.simulate('click');
+    previous.simulate('click');
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('2014');
+  });
+
+  it('should show next year on right navigation on months view' , () => {
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-11-05' currentView='months'/>);
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('2017');
+    let next = wrapper.find('th.next')
+    next.simulate('click');
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('2018');
+  });
+
+  it('should show correct year on navigating right multiple times on months view' , () => {
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05' currentView='months'/>);
+    let next = wrapper.find('th.next')
+    next.simulate('click');
+    next.simulate('click');
+    next.simulate('click');
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('2020');
+  });
+
+  it('should show previous decade on left navigation on years view' , () => {
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-05-05' currentView='years'/>);
+    let previous = wrapper.find('th.prev')
+    previous.simulate('click');
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('2000 - 2009');
+  });
+
+  it('should show correct decade on navigating left multiple times on years view' , () => {
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-05-05' currentView='years'/>);
+    let previous = wrapper.find('th.prev')
+    previous.simulate('click');
+    previous.simulate('click');
+    previous.simulate('click');
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('1980 - 1989');
+  });
+
+  it('should show next decade on right navigation on years view' , () => {
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05' currentView='years'/>);
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('2010 - 2019');
+    let next = wrapper.find('th.next')
+    next.simulate('click');
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('2020 - 2029');
+  });
+
+  it('should show correct decade on navigating right multiple times on years view' , () => {
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05' currentView='years'/>);
+    let next = wrapper.find('th.next')
+    next.simulate('click');
+    next.simulate('click');
+    next.simulate('click');
+    expect(wrapper.find('th.datepicker-switch').text()).to.equal('2040 - 2049');
+  });
+})
 
 describe('Calendar View', ()=>{
 
