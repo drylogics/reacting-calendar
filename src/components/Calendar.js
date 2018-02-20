@@ -83,7 +83,6 @@ export const CalendarMonths = (props) => {
   let {visibleDate, selectedDate, handleClick, ...otherProps} = props
   let visibleYear = visibleDate.year()
   let selectedYear = selectedDate.year()
-  debugger;
   let calculateClass = monthName => ((`${monthName} ${visibleYear}` === selectedDate.format('MMM YYYY')) ? 'month active' : 'month')
 
   return(
