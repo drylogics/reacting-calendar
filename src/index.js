@@ -6,4 +6,4 @@ import './index.css'
 
 const target = document.querySelector('#root')
 
-render( <Calendar name='Select Date:' />, target)
+render( <Calendar name='Select Date:' textInputVisible={true}/>, target)

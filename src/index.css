@@ -86,3 +86,13 @@ span.year.active{
   background-color: #3276b1;
   border-color: #285e8e;
 }
+
+input{
+  width: 200px;
+  height:20px;
+  padding: 5px;
+  border: 2px solid #285e8e;
+}
+input.error{
+  border:3px solid #a94442;
+}

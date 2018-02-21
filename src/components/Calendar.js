@@ -41,7 +41,7 @@ export const Header = (props) => {
   )
 }
 
-export const CalendarDays = (props) => {
+export const Days = props => {
   let {visibleDate, selectedDate, handleClick, ...otherProps} = props
   let startOfMonth = visibleDate.clone().startOf('month')
   let startDate = (startOfMonth.day() === 0) ? startOfMonth.clone().weekday(-7) : startOfMonth.clone().startOf('week')
@@ -79,7 +79,7 @@ export const CalendarDays = (props) => {
   )
 } 
 
-export const CalendarMonths = (props) => {
+export const Months = props => {
   let {visibleDate, selectedDate, handleClick, ...otherProps} = props
   let visibleYear = visibleDate.year()
   let selectedYear = selectedDate.year()
@@ -115,7 +115,7 @@ export const CalendarMonths = (props) => {
   )
 }
 
-export const CalendarYears = (props) => {
+export const Years = props => {
   let {visibleDate, selectedDate, handleClick, ...otherProps} = props
   let selectedYear = selectedDate.year()
   let activeYear = visibleDate.year()
@@ -143,6 +143,37 @@ export const CalendarYears = (props) => {
   )
 }
 
+export const DatePicker = props => {
+  let { 
+    className, visibleDate, selectedDate, previous, next, 
+    changeView, currentView, showDaysLabel,
+    selectMonth, selectYear, selectDay, ...otherProps
+  } = props
+  return(
+    <table className={className}>
+      <Header 
+        visibleDate={visibleDate} 
+        onPrevious={previous} 
+        onNext={next}
+        onChangeView={changeView}
+        currentView={currentView}
+        showDaysLabel={showDaysLabel}
+      />
+      {{
+        'months':(
+          <Months visibleDate={visibleDate} selectedDate={selectedDate} handleClick={selectMonth}/>
+        ),
+        'years':(
+          <Years visibleDate={visibleDate} selectedDate={selectedDate} handleClick={selectYear}/>
+        ),
+        'dates':(
+          <Days visibleDate={visibleDate} selectedDate={selectedDate} handleClick={selectDay}/>
+        )
+      }[currentView || 'dates']}
+    </table>
+  )
+}
+
 export default class Calendar extends Component {
   constructor(props) {
     super(props);
@@ -153,7 +184,11 @@ export default class Calendar extends Component {
       selectedDate: selectedDate,
       visibleDate: selectedDate,
       currentView: currentView,
-      showDaysLabel: showDaysLabel
+      showDaysLabel: showDaysLabel,
+      textInputVisible: props.textInputVisible ? props.textInputVisible : false,
+      inputFormat: props.inputFormat ? props.inputFormat : 'YYYY-MM-DD',
+      validSelection: selectedDate.isValid(),
+      inputText: ''
     };
   }
 
@@ -162,7 +197,9 @@ export default class Calendar extends Component {
     this.setState({
       visibleDate: date,
       selectedDate: date,
-      currentView: 'dates'
+      validSelection: date.isValid(),
+      currentView: 'dates',
+      inputText: date.format(this.state.inputFormat)
     })
   }
 
@@ -246,31 +283,72 @@ export default class Calendar extends Component {
     })
   }
 
+  handleInputTextChange = (e) => {
+    let expectedFormat = this.state.inputFormat
+    let isDateValid = false
+    let input = e.target.value
+    let calculateDate = () => {
+      if(input === ''){
+        return this.state.selectedDate.startOf('day')
+      }else{
+        let date = moment(input, expectedFormat).startOf('day')
+        if(date.isValid()){
+          isDateValid = true
+          return date
+        }else{
+          return this.state.selectedDate.startOf('day')
+        }
+      }
+    }
+    let date = calculateDate()
+    this.setState({
+      selectedDate: date,
+      visibleDate: date,
+      validSelection: isDateValid,
+      inputText: input
+    })
+  }
+
   render() {
+    let datepicker = (className) => {
+      return(
+        <DatePicker 
+          className={className}
+          visibleDate={this.state.visibleDate} 
+          selectedDate={this.state.selectedDate} 
+          currentView={this.state.currentView}
+          previous={this.previous}
+          next={this.next}
+          changeView={this.changeView}
+          showDaysLabel={this.state.showDaysLabel}
+          selectDay={this.selectDay}
+          selectMonth={this.selectMonth}
+          selectYear={this.selectYear}
+        />
+      )
+    }
+
+    let datepickerType = () => {
+      if(this.state.textInputVisible){
+        return(
+          <div>
+            <input className={`date-input ${(this.state.validSelection ? '' : 'error')}` } placeholder={this.state.inputFormat} onChange={this.handleInputTextChange} type='text' value={this.state.inputText}></input>
+            {datepicker('date-picker modal')}
+          </div>
+        )
+      }else{
+        return(
+          <div>
+            {datepicker('date-picker')}
+          </div>
+        )
+      }
+    }
+    
     return(
       <div>
         <label>{this.props.name}</label>
-        <table className="table-condensed">
-          <Header 
-            visibleDate={this.state.visibleDate} 
-            onPrevious={this.previous} 
-            onNext={this.next}
-            onChangeView={this.changeView}
-            currentView={this.state.currentView}
-            showDaysLabel={this.state.showDaysLabel}
-          />
-          {{
-            'months':(
-              <CalendarMonths visibleDate={this.state.visibleDate} selectedDate={this.state.selectedDate} handleClick={this.selectMonth}/>
-            ),
-            'years':(
-              <CalendarYears visibleDate={this.state.visibleDate} selectedDate={this.state.selectedDate} handleClick={this.selectYear}/>
-            ),
-            'dates':(
-              <CalendarDays visibleDate={this.state.visibleDate} selectedDate={this.state.selectedDate} handleClick={this.selectDay}/>
-            )
-          }[this.state.currentView || 'dates']}
-        </table>
+        { datepickerType() }
       </div>
     );
   }

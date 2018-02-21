@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import Calendar, { Header, CalendarDays, CalendarMonths, CalendarYears } from '../src/components/Calendar';
+import Calendar, { Header, Days, Months, Years, Input } from '../src/components/Calendar';
 import moment from 'moment/moment';
 import sinon from 'sinon';
 
@@ -198,32 +198,51 @@ describe('Calendar', () => {
   });
 
   it('should pass props correctly to Header', () =>{
-    const wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-05-05'/>);
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-05-05'/>);
     expect(wrapper.find('Header')).to.have.prop('visibleDate').deep.equal(mayFifth)
   });
 
-  it('should pass props correctly to CalendarDays', () =>{
-    const wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-05-05'/>);
-    expect(wrapper.find('CalendarDays')).to.have.prop('selectedDate').deep.equal(mayFifth)
-    expect(wrapper.find('CalendarDays')).to.have.prop('visibleDate').deep.equal(mayFifth)
+  it('should pass props correctly to Days', () =>{
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-05-05'/>);
+    expect(wrapper.find('Days')).to.have.prop('selectedDate').deep.equal(mayFifth)
+    expect(wrapper.find('Days')).to.have.prop('visibleDate').deep.equal(mayFifth)
   });
 
-  it('should pass props correctly to CalendarMonths', () =>{
-    const wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-05-05' currentView='months'/>);
-    expect(wrapper.find('CalendarMonths')).to.have.prop('selectedDate').deep.equal(mayFifth)
-    expect(wrapper.find('CalendarMonths')).to.have.prop('visibleDate').deep.equal(mayFifth)
+  it('should pass props correctly to Months', () =>{
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-05-05' currentView='months'/>);
+    expect(wrapper.find('Months')).to.have.prop('selectedDate').deep.equal(mayFifth)
+    expect(wrapper.find('Months')).to.have.prop('visibleDate').deep.equal(mayFifth)
   });
 
-  it('should pass props correctly to CalendarYears', () =>{
-    const wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-05-05' currentView='years'/>);
-    expect(wrapper.find('CalendarYears')).to.have.prop('selectedDate').deep.equal(mayFifth)
-    expect(wrapper.find('CalendarYears')).to.have.prop('visibleDate').deep.equal(mayFifth)
+  it('should pass props correctly to Years', () =>{
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-05-05' currentView='years'/>);
+    expect(wrapper.find('Years')).to.have.prop('selectedDate').deep.equal(mayFifth)
+    expect(wrapper.find('Years')).to.have.prop('visibleDate').deep.equal(mayFifth)
   });
 
   it('should display calendar days', () =>{
+    const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-05-05'/>);
+    expect(wrapper.find('Days')).to.have.prop('selectedDate').deep.equal(today)
+    expect(wrapper.find('Days')).to.have.prop('visibleDate').deep.equal(mayFifth)
+  });
+
+  it('should display input box when input box is set to visible', () => {
+    const wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-05-05' textInputVisible={true}/>);
+    let input = wrapper.find('input.date-input')
+    expect(wrapper.state('textInputVisible')).to.equal(true)
+    expect(input).to.have.length(1)
+    expect(input.text()).to.equal('')
+  });
+
+  it('should not display input box by default', () => {
     const wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-05-05'/>);
-    expect(wrapper.find('CalendarDays')).to.have.prop('selectedDate').deep.equal(today)
-    expect(wrapper.find('CalendarDays')).to.have.prop('visibleDate').deep.equal(mayFifth)
+    expect(wrapper.find('input.date-input')).to.have.length(0)
+    expect(wrapper.state('textInputVisible')).to.equal(false)
+  });
+
+  it('should display calendar as modal content when input box is selected', () => {
+    const wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-05-05' textInputVisible={true}/>);
+    
   });
 });
 
@@ -329,52 +348,52 @@ describe('Calendar Navigation', () => {
 })
 
 describe('Calendar View', ()=>{
-  it('should display CalendarDays when currentView is not given', () =>{
+  it('should display Days when currentView is not given', () =>{
     const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05'/>);
-    expect(wrapper.find('CalendarDays')).to.have.length(1)
+    expect(wrapper.find('Days')).to.have.length(1)
   })
 
-  it('should display CalendarDays when currentView is dates', () =>{
+  it('should display Days when currentView is dates', () =>{
     const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05' currentView='dates'/>);
-    expect(wrapper.find('CalendarDays')).to.have.length(1)
+    expect(wrapper.find('Days')).to.have.length(1)
   })
 
-  it('should display CalendarMonths when currentView is months', () =>{
+  it('should display Months when currentView is months', () =>{
     const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05' currentView='months'/>);
-    expect(wrapper.find('CalendarMonths')).to.have.length(1)
+    expect(wrapper.find('Months')).to.have.length(1)
   })
 
-  it('should display CalendarYears when currentView is years', () =>{
+  it('should display Years when currentView is years', () =>{
     const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05' currentView='years'/>);
-    expect(wrapper.find('CalendarYears')).to.have.length(1)    
+    expect(wrapper.find('Years')).to.have.length(1)    
   })
 
   it('should change currentView to months when header is clicked during days view', () =>{
     const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05' currentView='dates'/>);
     let previous = wrapper.find('th.datepicker-switch')
     previous.simulate('click');
-    expect(wrapper.find('CalendarMonths')).to.have.length(1)
+    expect(wrapper.find('Months')).to.have.length(1)
   })
 
   it('should change currentView to years when header is clicked during months view', () =>{
     const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05' currentView='months'/>);
     let previous = wrapper.find('th.datepicker-switch')
     previous.simulate('click');
-    expect(wrapper.find('CalendarYears')).to.have.length(1)
+    expect(wrapper.find('Years')).to.have.length(1)
   })
 
   it('should change currentView to months when year is clicked during years view', () =>{
     const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05' currentView='years'/>);
     let previous = wrapper.find('span.year').first()
     previous.simulate('click');
-    expect(wrapper.find('CalendarMonths')).to.have.length(1)
+    expect(wrapper.find('Months')).to.have.length(1)
   })
 
   it('should change currentView to days when month is clicked during months view', () =>{
     const wrapper = mount(<Calendar name="Start Date" selectedDate='2017-12-05' currentView='months'/>);
     let previous = wrapper.find('span.month').first()
     previous.simulate('click');
-    expect(wrapper.find('CalendarDays')).to.have.length(1)
+    expect(wrapper.find('Days')).to.have.length(1)
   })
 
   it('should set selectedDate when day is clicked during days view', () =>{
@@ -385,10 +404,10 @@ describe('Calendar View', ()=>{
   })
 });
 
-describe('CalendarDays', ()=>{
+describe('Days', ()=>{
   let decemberFifth = moment('2017-12-05').startOf('day')
   let today = moment().startOf('day')
-  const wrapper = mount(<CalendarDays visibleDate={decemberFifth} selectedDate={today}/>);
+  const wrapper = mount(<Days visibleDate={decemberFifth} selectedDate={today}/>);
 
   it('should have correct number of date rows and cells', ()=>{
     let dates = wrapper.find('td.day')
@@ -414,10 +433,10 @@ describe('CalendarDays', ()=>{
 });
 
 
-describe('CalendarMonths', ()=>{
+describe('Months', ()=>{
   let decemberFifth = moment('2017-12-05').startOf('day')
   let today = moment().startOf('day')
-  let wrapper = mount(<CalendarMonths visibleDate={decemberFifth} selectedDate={today}/>);
+  let wrapper = mount(<Months visibleDate={decemberFifth} selectedDate={today}/>);
 
   it('should have correct number of month rows and cells', ()=>{
     let months = wrapper.find('span.month')
@@ -426,16 +445,16 @@ describe('CalendarMonths', ()=>{
   });
 
   it('should highlight month of selected date only', () =>{
-    wrapper = mount(<CalendarMonths visibleDate={decemberFifth} selectedDate={decemberFifth}/>);
+    wrapper = mount(<Months visibleDate={decemberFifth} selectedDate={decemberFifth}/>);
     expect(wrapper.find('span.month.active')).to.have.length(1)
     expect(wrapper.find('span.month.active').first().text()).to.equal('Dec')    
   });
 });
 
-describe('CalendarYears', ()=>{
+describe('Years', ()=>{
   let decemberFifth = moment('2017-12-05').startOf('day')
   let today = moment().startOf('day')
-  let wrapper = mount(<CalendarYears visibleDate={decemberFifth} selectedDate={today}/>);
+  let wrapper = mount(<Years visibleDate={decemberFifth} selectedDate={today}/>);
 
   it('should have correct number of year rows and cells', ()=>{
     let years = wrapper.find('span.year')
@@ -444,16 +463,65 @@ describe('CalendarYears', ()=>{
   });
 
   it('should active-highlight year of selected date only', () =>{
-    wrapper = mount(<CalendarYears visibleDate={decemberFifth} selectedDate={decemberFifth}/>);
+    wrapper = mount(<Years visibleDate={decemberFifth} selectedDate={decemberFifth}/>);
     expect(wrapper.find('span.year.active')).to.have.length(1)
     expect(wrapper.find('span.year.active').first().text()).to.equal('2017')    
   });
 
   it('should clickable-highlight year of current decade only', () =>{
-    wrapper = mount(<CalendarYears visibleDate={decemberFifth} selectedDate={decemberFifth}/>);
+    wrapper = mount(<Years visibleDate={decemberFifth} selectedDate={decemberFifth}/>);
     expect(wrapper.find('span.year.old')).to.have.length(1)
     expect(wrapper.find('span.year.old').first().text()).to.equal('2009')
     expect(wrapper.find('span.year.new')).to.have.length(1)
     expect(wrapper.find('span.year.new').first().text()).to.equal('2020')    
   });
+});
+
+describe('Calendar Input', () => {
+
+  it('should have an text input box', () => {
+    let wrapper = shallow(<Calendar name="Start Date" selectedDate='2017-05-05' textInputVisible={true}/>);
+    expect(wrapper.find('input.date-input')).to.have.length(1)
+  });
+
+  // it('should display calendar component as modal when input is focussed', () => {
+  //   let wrapper = mount(<Calendar name="Start Date" selectedDate='2017-05-05' textInputVisible={true}/>);
+  //   let input = wrapper.find('input.date-input')
+  //   input.simulate('focus')
+  //   let focusedElement = document.activeElement;
+  //   expect(input.matchesElement(focusedElement)).to.equal(true, 'The element was not focused');
+  //   expect(wrapper.find('Calendar')).to.have.length(1)
+  // });
+
+  it('should pass input text as selectedDate state to Calendar Component', () => {
+    let wrapper = mount(<Calendar name="Start Date" selectedDate='2017-05-05' textInputVisible={true}/>);
+    let input = wrapper.find('input.date-input')
+    input.simulate('change', {target: {value: '2018-02-25'}});
+    expect(wrapper.state('selectedDate').format('YYYY-MM-DD')).to.equal('2018-02-25')
+  })
+
+  it('should pass input text as selectedDate property each time when text changes', () => {
+    let wrapper = mount(<Calendar name="Start Date" selectedDate='2017-05-05' textInputVisible={true}/>);
+    let input = wrapper.find('input.date-input')
+    input.simulate('change', {target: {value: '2018-02-25'}});
+    expect(wrapper.state('selectedDate').format('YYYY-MM-DD')).to.equal('2018-02-25')
+    input.simulate('change', {target: {value: '2018-02-24'}});
+    expect(wrapper.state('selectedDate').format('YYYY-MM-DD')).to.equal('2018-02-24')
+  })
+
+  it('should pass input text in format YYYY-MM-DD to calendar irrespective of input date format', () => {
+    let wrapper = mount(<Calendar name="Start Date" selectedDate='2017-05-05' textInputVisible={true} inputFormat='DD/MM/YYYY'/>);
+    let input = wrapper.find('input.date-input')
+    input.simulate('change', {target: {value: '25/02/2018'}});
+    expect(wrapper.state('selectedDate').format('YYYY-MM-DD')).to.equal('2018-02-25')
+  })
+
+  it('should display warning when wrong format input is given', () => {
+    let wrapper = mount(<Calendar name="Start Date" selectedDate='2017-05-05' textInputVisible={true} inputFormat='DD/MM/YYYY'/>);
+    let input = wrapper.find('input.date-input')
+    input.simulate('change', {target: {value: '02/25/2018'}});
+    expect(wrapper.find('input.date-input.error')).to.have.length(1)
+    input.simulate('change', {target: {value: '25/02/2018'}});
+    expect(wrapper.find('input.date-input.error')).to.have.length(0)
+  })
 });
