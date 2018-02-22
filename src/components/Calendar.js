@@ -211,7 +211,8 @@ export default class Calendar extends Component {
   selectMonth = (e) => {
     this.setState({
       visibleDate: moment(e.target.id, 'YYYY-MM'),
-      currentView: 'dates'
+      currentView: 'dates',
+      showDaysLabel: true
     })
   }
 
