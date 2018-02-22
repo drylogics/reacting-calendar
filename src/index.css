@@ -87,12 +87,54 @@ span.year.active{
   border-color: #285e8e;
 }
 
-input{
-  width: 200px;
-  height:20px;
-  padding: 5px;
-  border: 2px solid #285e8e;
+div.date-input {
+  position: relative;
+  color: #aaa;
+  font-size: 16px;
 }
+
+input.date-input {
+  width: 230px;
+  height: 32px;
+
+  background: #fcfcfc;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  box-shadow: 0 0 3px #ccc, 0 10px 15px #ebebeb inset;
+  text-indent: 10px;
+}
+
+button.date-input { 
+  position: absolute;
+  float: right;
+  top: 10px;
+  left: 205px;
+}
+
 input.error{
   border:3px solid #a94442;
+}
+
+button.date-input{
+  border: 0px;
+  background-color: inherit;
+}
+
+.visible{
+  display: block;
+}
+
+.hidden{
+  display: none;
+}
+
+.modal{
+  border: 1px solid black; 
+  border-radius: 5px;
+  padding: 1px;
+  width: fit-content;
+  text-align: center;
+  background: #fff;
+  position: relative; 
+  z-index: 1000; 
 }

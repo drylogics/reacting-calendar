@@ -484,13 +484,18 @@ describe('Calendar Input', () => {
     expect(wrapper.find('input.date-input')).to.have.length(1)
   });
 
-  // it('should display calendar component as modal when input is focussed', () => {
+  // it('should display calendar component as modal when show calendar button is clicked', () => {
   //   let wrapper = mount(<Calendar name="Start Date" selectedDate='2017-05-05' textInputVisible={true}/>);
-  //   let input = wrapper.find('input.date-input')
-  //   input.simulate('focus')
-  //   let focusedElement = document.activeElement;
-  //   expect(input.matchesElement(focusedElement)).to.equal(true, 'The element was not focused');
-  //   expect(wrapper.find('Calendar')).to.have.length(1)
+  //   let button = wrapper.find('button.date-input')
+  //   expect(wrapper.find('table.date-picker')).to.have.style('display', 'none')
+  // });
+
+  // it('should hide calendar component as modal when show calendar button is clicked twice', () => {
+  //   let wrapper = mount(<Calendar name="Start Date" selectedDate='2017-05-05' textInputVisible={true}/>);
+  //   let button = wrapper.find('button.date-input')
+  //   button.simulate('click')
+  //   button.simulate('click')
+  //   expect(wrapper.find('table.date-picker')).to.have.length(0)
   // });
 
   it('should pass input text as selectedDate state to Calendar Component', () => {

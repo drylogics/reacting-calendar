@@ -150,7 +150,7 @@ export const DatePicker = props => {
     selectMonth, selectYear, selectDay, ...otherProps
   } = props
   return(
-    <table className={className}>
+    <table className={`date-picker ${className}`}>
       <Header 
         visibleDate={visibleDate} 
         onPrevious={previous} 
@@ -180,15 +180,19 @@ export default class Calendar extends Component {
     let selectedDate = (props.selectedDate ? moment(props.selectedDate) : moment()).startOf('day');
     let currentView = props.currentView ? props.currentView : 'dates'
     let showDaysLabel = (currentView === 'dates')
+    let textInputVisible = props.textInputVisible ? props.textInputVisible : false
+    let isDatepickerVisible = textInputVisible ? false : true
+
     this.state = {
       selectedDate: selectedDate,
       visibleDate: selectedDate,
       currentView: currentView,
       showDaysLabel: showDaysLabel,
-      textInputVisible: props.textInputVisible ? props.textInputVisible : false,
+      textInputVisible: textInputVisible,
       inputFormat: props.inputFormat ? props.inputFormat : 'YYYY-MM-DD',
       validSelection: selectedDate.isValid(),
-      inputText: ''
+      inputText: '',
+      isDatepickerVisible: isDatepickerVisible,
     };
   }
 
@@ -199,7 +203,8 @@ export default class Calendar extends Component {
       selectedDate: date,
       validSelection: date.isValid(),
       currentView: 'dates',
-      inputText: date.format(this.state.inputFormat)
+      inputText: date.format(this.state.inputFormat),
+      isDatepickerVisible: false
     })
   }
 
@@ -309,6 +314,12 @@ export default class Calendar extends Component {
     })
   }
 
+  toggleCalendar = () => {
+    this.setState({
+      isDatepickerVisible: !(this.state.isDatepickerVisible)
+    })
+  }
+
   render() {
     let datepicker = (className) => {
       return(
@@ -332,14 +343,23 @@ export default class Calendar extends Component {
       if(this.state.textInputVisible){
         return(
           <div>
-            <input className={`date-input ${(this.state.validSelection ? '' : 'error')}` } placeholder={this.state.inputFormat} onChange={this.handleInputTextChange} type='text' value={this.state.inputText}></input>
-            {datepicker('date-picker modal')}
+            <div className='date-input'>
+              <input 
+                className={`date-input ${(this.state.validSelection ? '' : 'error')}` } 
+                placeholder={this.state.inputFormat} 
+                onChange={this.handleInputTextChange} 
+                type='text' 
+                value={this.state.inputText}
+              />
+              <button className='date-input' onClick={this.toggleCalendar} type='button'>⯆</button>
+            </div>
+            {datepicker(`modal ${this.state.isDatepickerVisible ? 'visible' : 'hidden'}`)}
           </div>
         )
       }else{
         return(
           <div>
-            {datepicker('date-picker')}
+            {datepicker('visible')}
           </div>
         )
       }
