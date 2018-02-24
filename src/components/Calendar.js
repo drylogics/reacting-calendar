@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
 import _ from 'lodash';
-import './Calendar.css';
+// import './Calendar.css';
 
 const moment = extendMoment(Moment);
 
