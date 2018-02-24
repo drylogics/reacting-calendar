@@ -1,4 +1,2 @@
 import Calendar from './components/Calendar';
-module.exports = {
-  Calendar
-};
+export default Calendar;

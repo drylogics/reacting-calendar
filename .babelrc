@@ -1,7 +1,9 @@
 {
-  "presets": ["stage-1", "react"],
+  "presets": ["stage-1", "env", "react"],
   "plugins": [
-    "transform-object-assign"
+    "transform-object-assign",
+    "transform-object-rest-spread",
+    "transform-class-properties"
   ],
   "env": {
     "coverage": {

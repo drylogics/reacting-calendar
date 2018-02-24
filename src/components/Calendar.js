@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
 import _ from 'lodash';
+import './Calendar.css';
 
 const moment = extendMoment(Moment);
 
@@ -15,7 +16,7 @@ export const Header = (props) => {
     }else{
       let year = visibleDate.year()
       let startOfDecade = year - (year % 10)
-      return `${startOfDecade} - ${startOfDecade + 9}` 
+      return `${startOfDecade} - ${startOfDecade + 9}`
     }
   }
 
@@ -49,7 +50,7 @@ export const Days = props => {
   let range = moment.range(startDate, endDate)
   let tdHtmlClass = ''
   let dateString = ''
-  let dates = Array.from(range.by('day')).map((dt) => { 
+  let dates = Array.from(range.by('day')).map((dt) => {
     if(dt.isBefore(visibleDate, 'month')){
       tdHtmlClass = 'day old'
     }else if(dt.isAfter(visibleDate, 'month')){
@@ -77,7 +78,7 @@ export const Days = props => {
     }
     </tbody>
   )
-} 
+}
 
 export const Months = props => {
   let {visibleDate, selectedDate, handleClick, ...otherProps} = props
@@ -144,16 +145,16 @@ export const Years = props => {
 }
 
 export const DatePicker = props => {
-  let { 
-    className, visibleDate, selectedDate, previous, next, 
+  let {
+    className, visibleDate, selectedDate, previous, next,
     changeView, currentView, showDaysLabel,
     selectMonth, selectYear, selectDay, ...otherProps
   } = props
   return(
     <table className={className}>
-      <Header 
-        visibleDate={visibleDate} 
-        onPrevious={previous} 
+      <Header
+        visibleDate={visibleDate}
+        onPrevious={previous}
         onNext={next}
         onChangeView={changeView}
         currentView={currentView}
@@ -231,7 +232,7 @@ export default class Calendar extends Component {
         let previousDecadeDate = moment(startOfDecade - 10, 'YYYY')
         this.setState({
           visibleDate: previousDecadeDate,
-        })  
+        })
         break;
       default:
         let previousMonthDate = this.state.visibleDate.clone().startOf('month').subtract(1,'months')
@@ -240,7 +241,7 @@ export default class Calendar extends Component {
         })
     }
   }
-  
+
   next = () => {
     switch(this.state.currentView){
       case 'months':
@@ -255,7 +256,7 @@ export default class Calendar extends Component {
         let nextDecadeDate = moment(startOfDecade + 10, 'YYYY')
         this.setState({
           visibleDate: nextDecadeDate,
-        })  
+        })
         break;
       default:
         let nextMonthDate = this.state.visibleDate.clone().startOf('month').add(1,'months')
@@ -264,7 +265,7 @@ export default class Calendar extends Component {
         })
     }
   }
- 
+
   changeView = () => {
     let viewToBeChanged = ''
     switch(this.state.currentView){
@@ -312,10 +313,10 @@ export default class Calendar extends Component {
   render() {
     let datepicker = (className) => {
       return(
-        <DatePicker 
+        <DatePicker
           className={className}
-          visibleDate={this.state.visibleDate} 
-          selectedDate={this.state.selectedDate} 
+          visibleDate={this.state.visibleDate}
+          selectedDate={this.state.selectedDate}
           currentView={this.state.currentView}
           previous={this.previous}
           next={this.next}
@@ -344,7 +345,7 @@ export default class Calendar extends Component {
         )
       }
     }
-    
+
     return(
       <div>
         <label>{this.props.name}</label>
