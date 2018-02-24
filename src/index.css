@@ -9,11 +9,11 @@ table {
   direction: ltr;
 }
 
-thead{
+thead {
   vertical-align: middle;
 }
 
-th{
+th {
   cursor: pointer;
   padding: 0 5;
   width: 30px;
@@ -22,15 +22,15 @@ th{
   font-weight: bold;
 }
 
-th.datepicker-switch{
+th.datepicker-switch {
   width: 145px;
 }
 
-tbody{
+tbody {
   vertical-align: middle;
 }
 
-td{
+td {
   padding: 0 5;
   width: 30px;
   height: 30px;
@@ -40,22 +40,21 @@ td{
   cursor: pointer;
 }
 
-td.old{
+td.old {
   color: #999;
 }
 
-
-td.new{
+td.new {
   color: #999;
 }
 
-td.active{
+td.active {
   color: #fff;
   background-color: #0d90c0;
   border-color: #0d90c0;
 }
 
-span.month{
+span.month {
   width: 23%;
   height: 54px;
   line-height: 54px;
@@ -65,13 +64,13 @@ span.month{
   border-radius: 4px;
 }
 
-span.month.active{
+span.month.active {
   color: #fff;
   background-color: #3276b1;
   border-color: #285e8e;
 }
 
-span.year{
+span.year {
   width: 23%;
   height: 54px;
   line-height: 54px;
@@ -81,7 +80,7 @@ span.year{
   border-radius: 4px;
 }
 
-span.year.active{
+span.year.active {
   color: #fff;
   background-color: #3276b1;
   border-color: #285e8e;
@@ -104,37 +103,37 @@ input.date-input {
   text-indent: 10px;
 }
 
-button.date-input { 
+button.date-input {
   position: absolute;
   float: right;
   top: 10px;
   left: 205px;
 }
 
-input.error{
-  border:3px solid #a94442;
+input.error {
+  border: 3px solid #a94442;
 }
 
-button.date-input{
+button.date-input {
   border: 0px;
   background-color: inherit;
 }
 
-.visible{
+.visible {
   display: block;
 }
 
-.hidden{
+.hidden {
   display: none;
 }
 
-.modal{
-  border: 1px solid black; 
+.modal {
+  border: 1px solid black;
   border-radius: 5px;
   padding: 1px;
   width: fit-content;
   text-align: center;
   background: #fff;
-  position: relative; 
-  z-index: 1000; 
+  position: relative;
+  z-index: 1000;
 }
