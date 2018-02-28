@@ -6,7 +6,7 @@ import injectSheet from 'react-jss'
 
 
 const styles = {
- 'table': {
+ mainClass: {
     'font-family': 'Arial, Helvetica, sans-serif',
     'font-weight': 400,
     'border-color': 'grey',
@@ -16,10 +16,10 @@ const styles = {
     'box-sizing': 'border-box',
     'direction': 'ltr'
   },
-  'thead': {
+  thead: {
     'vertical-align': 'middle'
   },
-  'th': {
+  columnHeader: {
     'cursor': 'pointer',
     'padding': '0 5',
     'width': '30px',
@@ -94,8 +94,8 @@ const styles = {
 
 const moment = extendMoment(Moment);
 
-export const Header = (props) => {
-  let {visibleDate, onPrevious, onNext, onChangeView, currentView, showDaysLabel, ...otherProps} = props
+const header = (props) => {
+  let {classes, visibleDate, onPrevious, onNext, onChangeView, currentView, showDaysLabel, ...otherProps} = props
   let headerText = () => {
     if(currentView == 'dates'){
       return visibleDate.format('MMMM YYYY')
@@ -109,26 +109,28 @@ export const Header = (props) => {
   }
 
   let dayLabels = (<tr>
-    <th colSpan="1" className="dow" >SU</th>
-    <th colSpan="1" className="dow" >MO</th>
-    <th colSpan="1" className="dow" >TU</th>
-    <th colSpan="1" className="dow" >WE</th>
-    <th colSpan="1" className="dow" >TH</th>
-    <th colSpan="1" className="dow" >FR</th>
-    <th colSpan="1" className="dow" >SA</th>
+    <th colSpan="1" className={'dow ' + classes.columnHeader}>SU</th>
+    <th colSpan="1" className={'dow ' + classes.columnHeader}>MO</th>
+    <th colSpan="1" className={'dow ' + classes.columnHeader}>TU</th>
+    <th colSpan="1" className={'dow ' + classes.columnHeader}>WE</th>
+    <th colSpan="1" className={'dow ' + classes.columnHeader}>TH</th>
+    <th colSpan="1" className={'dow ' + classes.columnHeader}>FR</th>
+    <th colSpan="1" className={'dow ' + classes.columnHeader}>SA</th>
   </tr>)
 
   return (
-    <thead>
+    <thead className={classes.thead}>
       <tr>
-        <th onClick={onPrevious} colSpan={1} className="prev" >«</th>
-        <th colSpan="5" onClick={onChangeView} className="datepicker-switch">{headerText()}</th>
-        <th onClick={onNext} colSpan="1" className="next" >»</th>
+        <th onClick={onPrevious} colSpan={1} className={'prev ' + classes.columnHeader} >«</th>
+        <th colSpan="5" onClick={onChangeView} className={'datepicker-switch ' + classes.columnHeader}>{headerText()}</th>
+        <th onClick={onNext} colSpan="1" className={'next ' + classes.columnHeader}>»</th>
       </tr>
       { showDaysLabel ?  dayLabels : null }
     </thead>
   )
 }
+
+export const Header = injectSheet(styles)(header);
 
 export const Days = props => {
   let {visibleDate, selectedDate, handleClick, ...otherProps} = props
@@ -402,7 +404,7 @@ class Calendar extends Component {
     let datepicker = (className) => {
       return(
         <DatePicker
-          className={className}
+          className={this.props.mainClass}
           visibleDate={this.state.visibleDate}
           selectedDate={this.state.selectedDate}
           currentView={this.state.currentView}
