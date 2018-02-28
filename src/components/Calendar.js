@@ -132,8 +132,8 @@ const header = (props) => {
 
 export const Header = injectSheet(styles)(header);
 
-export const Days = props => {
-  let {visibleDate, selectedDate, handleClick, ...otherProps} = props
+const days = props => {
+  let {classes visibleDate, selectedDate, handleClick, ...otherProps} = props
   let startOfMonth = visibleDate.clone().startOf('month')
   let startDate = (startOfMonth.day() === 0) ? startOfMonth.clone().weekday(-7) : startOfMonth.clone().startOf('week')
   let endDate = startDate.clone().add(41, 'days')
@@ -159,7 +159,7 @@ export const Days = props => {
   })
 
   return (
-    <tbody>
+    <tbody className={classes.tbody}>
     {
       _.chain(dates)
       .chunk(7)
@@ -169,6 +169,8 @@ export const Days = props => {
     </tbody>
   )
 }
+
+export const Days = injectSheet(styles)(header);
 
 export const Months = props => {
   let {visibleDate, selectedDate, handleClick, ...otherProps} = props
