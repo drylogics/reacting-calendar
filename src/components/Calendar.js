@@ -2,7 +2,95 @@ import React, { Component } from 'react'
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
 import _ from 'lodash';
-// import './Calendar.css';
+import injectSheet from 'react-jss'
+
+
+const styles = {
+ 'table': {
+    'font-family': 'Arial, Helvetica, sans-serif',
+    'font-weight': 400,
+    'border-color': 'grey',
+    'text-align': 'center',
+    'color': 'black',
+    'text-transform': 'uppercase',
+    'box-sizing': 'border-box',
+    'direction': 'ltr'
+  },
+  'thead': {
+    'vertical-align': 'middle'
+  },
+  'th': {
+    'cursor': 'pointer',
+    'padding': '0 5',
+    'width': '30px',
+    'height': '30px',
+    'font-size': '12px',
+    'font-weight': 'bold'
+  },
+  'th.datepicker-switch': {
+    width: '145px'
+  },
+  tbody: {
+    'vertical-align': 'middle'
+  },
+  td: {
+    padding: '0 5',
+    width: '30px',
+    height: '30px',
+    'border-radius': '4px',
+    border: 'none',
+    'font-size': '12px',
+    cursor: 'pointer'
+  },
+  'td.old': {
+    color: '#999'
+  },
+  'td.new': {
+    color: '#999'
+  },
+  'td.active': {
+    color: '#fff',
+    'background-color': '#0d90c0',
+    'border-color': '#0d90c0'
+  },
+  'span.month': {
+    width: '23%',
+    height: '54px',
+    'line-height': '54px',
+    float: 'left',
+    margin: '1%',
+    cursor: 'pointer',
+    'border-radius': '4px',
+  },
+  'span.month.active': {
+    color: '#fff',
+    'background-color': '#3276b1',
+    'border-color': '#285e8e',
+  },
+  'span.year': {
+    width: '23%',
+    height: '54px',
+    'line-height': '54px',
+    float: 'left',
+    margin: '1%',
+    cursor: 'pointer',
+    'border-radius': '4px',
+  },
+  'span.year.active': {
+    color: '#fff',
+    'background-color': '#3276b1',
+    'border-color': '#285e8e',
+  },
+  input: {
+    width: '200px',
+    height:'20px',
+    padding: '5px',
+    border: '2px solid #285e8e',
+  },
+  'input.error': {
+    border: '3px solid #a94442',
+  }
+}
 
 const moment = extendMoment(Moment);
 
@@ -175,7 +263,7 @@ export const DatePicker = props => {
   )
 }
 
-export default class Calendar extends Component {
+class Calendar extends Component {
   constructor(props) {
     super(props);
     let selectedDate = (props.selectedDate ? moment(props.selectedDate) : moment()).startOf('day');
@@ -354,3 +442,4 @@ export default class Calendar extends Component {
     );
   }
 }
+export default injectSheet(styles)(Calendar);
