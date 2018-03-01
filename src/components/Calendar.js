@@ -27,13 +27,13 @@ const styles = {
     'font-size': '12px',
     'font-weight': 'bold'
   },
-  'th.datepicker-switch': {
+  switch: {
     width: '145px'
   },
   tbody: {
     'vertical-align': 'middle'
   },
-  td: {
+  cell: {
     padding: '0 5',
     width: '30px',
     height: '30px',
@@ -42,18 +42,18 @@ const styles = {
     'font-size': '12px',
     cursor: 'pointer'
   },
-  'td.old': {
+  old: {
     color: '#999'
   },
-  'td.new': {
+  new: {
     color: '#999'
   },
-  'td.active': {
+  active: {
     color: '#fff',
     'background-color': '#0d90c0',
     'border-color': '#0d90c0'
   },
-  'span.month': {
+  month: {
     width: '23%',
     height: '54px',
     'line-height': '54px',
@@ -62,12 +62,12 @@ const styles = {
     cursor: 'pointer',
     'border-radius': '4px',
   },
-  'span.month.active': {
+  activeMonth: {
     color: '#fff',
     'background-color': '#3276b1',
     'border-color': '#285e8e',
   },
-  'span.year': {
+  year: {
     width: '23%',
     height: '54px',
     'line-height': '54px',
@@ -76,7 +76,7 @@ const styles = {
     cursor: 'pointer',
     'border-radius': '4px',
   },
-  'span.year.active': {
+  activeYear: {
     color: '#fff',
     'background-color': '#3276b1',
     'border-color': '#285e8e',
@@ -109,20 +109,20 @@ const header = (props) => {
   }
 
   let dayLabels = (<tr>
-    <th colSpan="1" className={'dow ' + classes.columnHeader}>SU</th>
-    <th colSpan="1" className={'dow ' + classes.columnHeader}>MO</th>
-    <th colSpan="1" className={'dow ' + classes.columnHeader}>TU</th>
-    <th colSpan="1" className={'dow ' + classes.columnHeader}>WE</th>
-    <th colSpan="1" className={'dow ' + classes.columnHeader}>TH</th>
-    <th colSpan="1" className={'dow ' + classes.columnHeader}>FR</th>
-    <th colSpan="1" className={'dow ' + classes.columnHeader}>SA</th>
+    <th colSpan="1" className={classes.columnHeader}>SU</th>
+    <th colSpan="1" className={classes.columnHeader}>MO</th>
+    <th colSpan="1" className={classes.columnHeader}>TU</th>
+    <th colSpan="1" className={classes.columnHeader}>WE</th>
+    <th colSpan="1" className={classes.columnHeader}>TH</th>
+    <th colSpan="1" className={classes.columnHeader}>FR</th>
+    <th colSpan="1" className={classes.columnHeader}>SA</th>
   </tr>)
 
   return (
     <thead className={classes.thead}>
       <tr>
-        <th onClick={onPrevious} colSpan={1} className={'prev ' + classes.columnHeader} >«</th>
-        <th colSpan="5" onClick={onChangeView} className={'datepicker-switch ' + classes.columnHeader}>{headerText()}</th>
+        <th onClick={onPrevious} colSpan={1} className={`prev ${classes.columnHeader}`} >«</th>
+        <th colSpan="5" onClick={onChangeView} className={`${classes.switch} ${classes.columnHeader}`}>{headerText()}</th>
         <th onClick={onNext} colSpan="1" className={'next ' + classes.columnHeader}>»</th>
       </tr>
       { showDaysLabel ?  dayLabels : null }
@@ -130,10 +130,8 @@ const header = (props) => {
   )
 }
 
-export const Header = injectSheet(styles)(header);
-
 const days = props => {
-  let {classes visibleDate, selectedDate, handleClick, ...otherProps} = props
+  let {classes, visibleDate, selectedDate, handleClick, ...otherProps} = props
   let startOfMonth = visibleDate.clone().startOf('month')
   let startDate = (startOfMonth.day() === 0) ? startOfMonth.clone().weekday(-7) : startOfMonth.clone().startOf('week')
   let endDate = startDate.clone().add(41, 'days')
@@ -142,17 +140,17 @@ const days = props => {
   let dateString = ''
   let dates = Array.from(range.by('day')).map((dt) => {
     if(dt.isBefore(visibleDate, 'month')){
-      tdHtmlClass = 'day old'
+      tdHtmlClass = 'day ' + classes.old
     }else if(dt.isAfter(visibleDate, 'month')){
-      tdHtmlClass = 'day new'
+      tdHtmlClass = 'day ' + classes.new
     }else if(dt.isSame(selectedDate, 'day')){
-      tdHtmlClass = 'day active'
+      tdHtmlClass = 'day ' + classes.active
     }else{
       tdHtmlClass = 'day'
     }
     dateString = dt.format('YYYY-MM-DD')
     return(
-      <td key={dateString} onClick={handleClick} className={tdHtmlClass} id={dateString}>
+      <td key={dateString} onClick={handleClick} className={classes.cell + ' ' + tdHtmlClass} id={dateString}>
         {dt.format('DD')}
       </td>
     )
@@ -170,18 +168,17 @@ const days = props => {
   )
 }
 
-export const Days = injectSheet(styles)(header);
 
-export const Months = props => {
-  let {visibleDate, selectedDate, handleClick, ...otherProps} = props
+export const months = props => {
+  let {classes, visibleDate, selectedDate, handleClick, ...otherProps} = props
   let visibleYear = visibleDate.year()
   let selectedYear = selectedDate.year()
-  let calculateClass = monthName => ((`${monthName} ${visibleYear}` === selectedDate.format('MMM YYYY')) ? 'month active' : 'month')
+  let calculateClass = monthName => ((`${monthName} ${visibleYear}` === selectedDate.format('MMM YYYY')) ? classes.month + ' ' + classes.activeMonth : classes.month)
 
   return(
-    <tbody>
+    <tbody className={classes.tbody}>
       <tr>
-        <td colSpan={7}>
+        <td colSpan={7} className={classes.cell}>
           <span onClick={handleClick} className={calculateClass('Jan')} id={`${visibleYear}-01`}>Jan</span>
           <span onClick={handleClick} className={calculateClass('Feb')} id={`${visibleYear}-02`}>Feb</span>
           <span onClick={handleClick} className={calculateClass('Mar')} id={`${visibleYear}-03`}>Mar</span>
@@ -189,7 +186,7 @@ export const Months = props => {
         </td>
       </tr>
       <tr>
-        <td colSpan={7}>
+        <td colSpan={7} className={classes.cell}>
           <span onClick={handleClick} className={calculateClass('May')} id={`${visibleYear}-05`}>May</span>
           <span onClick={handleClick} className={calculateClass('Jun')} id={`${visibleYear}-06`}>Jun</span>
           <span onClick={handleClick} className={calculateClass('Jul')} id={`${visibleYear}-07`}>Jul</span>
@@ -197,7 +194,7 @@ export const Months = props => {
         </td>
       </tr>
       <tr>
-      <td colSpan={7}>
+      <td colSpan={7} className={classes.cell}>
           <span onClick={handleClick} className={calculateClass('Sep')} id={`${visibleYear}-09`}>Sep</span>
           <span onClick={handleClick} className={calculateClass('Oct')} id={`${visibleYear}-10`}>Oct</span>
           <span onClick={handleClick} className={calculateClass('Nov')} id={`${visibleYear}-11`}>Nov</span>
@@ -208,33 +205,39 @@ export const Months = props => {
   )
 }
 
-export const Years = props => {
-  let {visibleDate, selectedDate, handleClick, ...otherProps} = props
+export const years = props => {
+  let {classes, visibleDate, selectedDate, handleClick, ...otherProps} = props
   let selectedYear = selectedDate.year()
   let activeYear = visibleDate.year()
   let startOfDecade = activeYear - (activeYear % 10)
-  let spanHtmlClass = ''
+  let spanHtmlClass = 'year '
   let years = _.range(startOfDecade -1, startOfDecade + 11).map((yr, index) => {
+
     if(yr < startOfDecade){
-      spanHtmlClass = 'year old'
+      spanHtmlClass = spanHtmlClass + classes.old
     }else if(yr < startOfDecade + 10){
-      spanHtmlClass = (selectedYear === yr) ? 'year active' : 'year'
+      spanHtmlClass = spanHtmlClass + ((selectedYear === yr) ? classes.activeYear : '')
     }else{
-      spanHtmlClass = 'year new'
+      spanHtmlClass = spanHtmlClass + classes.new
     }
     return(<span key={index} onClick={handleClick} className={spanHtmlClass} id={yr}>{yr}</span>)
   })
   return(
-    <tbody>
+    <tbody className={classes.tbody}>
     {
       _.chain(years)
       .chunk(4)
-      .map((arr, index) => <tr key={index}><td colSpan={7} key={index}>{arr}</td></tr>)
+      .map((arr, index) => <tr key={index}><td className={classes.cell} colSpan={7} key={index}>{arr}</td></tr>)
       .value()
     }
     </tbody>
   )
 }
+
+export const Header = injectSheet(styles)(header);
+export const Days = injectSheet(styles)(days);
+export const Months = injectSheet(styles)(months);
+export const Years = injectSheet(styles)(years);
 
 export const DatePicker = props => {
   let {
@@ -267,12 +270,16 @@ export const DatePicker = props => {
   )
 }
 
+
+
 class Calendar extends Component {
   constructor(props) {
     super(props);
     let selectedDate = (props.selectedDate ? moment(props.selectedDate) : moment()).startOf('day');
     let currentView = props.currentView ? props.currentView : 'dates'
     let showDaysLabel = (currentView === 'dates')
+    this.classes = props.classes
+
     this.state = {
       selectedDate: selectedDate,
       visibleDate: selectedDate,
@@ -403,10 +410,11 @@ class Calendar extends Component {
   }
 
   render() {
+    let classes = this.classes;
     let datepicker = (className) => {
       return(
         <DatePicker
-          className={this.props.mainClass}
+          className={classes.mainClass}
           visibleDate={this.state.visibleDate}
           selectedDate={this.state.selectedDate}
           currentView={this.state.currentView}
@@ -425,7 +433,7 @@ class Calendar extends Component {
       if(this.state.textInputVisible){
         return(
           <div>
-            <input className={`date-input ${(this.state.validSelection ? '' : 'error')}` } placeholder={this.state.inputFormat} onChange={this.handleInputTextChange} type='text' value={this.state.inputText}></input>
+            <input className={`${classes.input} ${(this.state.validSelection ? '' : classes.error)}` } placeholder={this.state.inputFormat} onChange={this.handleInputTextChange} type='text' value={this.state.inputText}></input>
             {datepicker('date-picker modal')}
           </div>
         )
