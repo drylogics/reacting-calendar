@@ -4,4 +4,10 @@ import Calendar from "reacting-calendar";
 
 const target = document.querySelector("#root");
 
-render(<Calendar name="Select Date:" textInputVisible={true} />, target);
+render(
+  <Calendar 
+    name="Select Date:" 
+    textInputVisible
+  />, 
+  target
+);
