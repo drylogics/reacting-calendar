@@ -14,7 +14,7 @@
   "scripts": {
     "start": "export PORT=4000; react-scripts start",
     "build": "react-scripts build",
-    "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js \"test/*@(.js|.jsx)\" --watch --watch-extensions jsx",
+    "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js --require ignore-styles \"test/*@(.js|.jsx)\" --watch --watch-extensions jsx",
     "testd": "mocha --inspect-brk --compilers js:babel-core/register --require ./test/test_helper.js \"test/*@(.js|.jsx)\" --watch --watch-extensions jsx",
     "eject": "react-scripts eject"
   },
@@ -29,6 +29,7 @@
     "enzyme": "3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "history": "^4.7.2",
+    "ignore-styles": "^5.0.1",
     "mocha": "^5.0.1",
     "react-dom": "^16.2.0",
     "react-router-config": "^1.0.0-beta.4",
