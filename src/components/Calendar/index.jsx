@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Moment from "moment";
 import { extendMoment } from "moment-range";
 import _ from "lodash";
+import './index.css';
 
 const moment = extendMoment(Moment);
 
@@ -15,9 +16,9 @@ export const Header = props => {
     showDaysLabel
   } = props;
   const headerText = () => {
-    if (currentView == "dates") {
+    if (currentView === "dates") {
       return visibleDate.format("MMMM YYYY");
-    } else if (currentView == "months") {
+    } else if (currentView === "months") {
       return visibleDate.format("YYYY");
     } else {
       const year = visibleDate.year();
@@ -103,7 +104,6 @@ export const Days = props => {
 export const Months = props => {
   const { visibleDate, selectedDate, handleClick } = props;
   const visibleYear = visibleDate.year();
-  const selectedYear = selectedDate.year();
   const calculateClass = monthName =>
     `${monthName} ${visibleYear}` === selectedDate.format("MMM YYYY")
       ? "month active"
