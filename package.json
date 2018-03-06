@@ -14,7 +14,7 @@
   "scripts": {
     "start": "export PORT=4000; react-scripts start",
     "build": "react-scripts build",
-    "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js --require ignore-styles \"test/*@(.js|.jsx)\" --watch --watch-extensions jsx",
+    "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js --require ignore-styles \"test/DataTable.spec.jsx\" --watch --watch-extensions jsx",
     "testd": "mocha --inspect-brk --compilers js:babel-core/register --require ./test/test_helper.js \"test/*@(.js|.jsx)\" --watch --watch-extensions jsx",
     "eject": "react-scripts eject"
   },
