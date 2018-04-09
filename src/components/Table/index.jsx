@@ -6,13 +6,15 @@ class Cell extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
-        value: this.children || ""
+        value: this.props.value || "",
+        isHeader: this.props.isHeader || false,
+        width: this.props.width || 60,
       };
     }
 
     render() {
       return (
-        <div className={"td" + this.state.isHeader ? "head" : "value"}>
+        <div className={"td" + this.state.isHeader ? "head" : "value"} style={{width: this.state.width}}>
           {this.state.value}
         </div>
       );
@@ -31,23 +33,26 @@ class Cell extends React.Component {
 
     getValues() {
       const values = this.state.values
-      return _.chain(this.state.columns).map(column => {
-        if(column.visible === true){
+      return _.chain(this.state.columns).map((column, index) => {
+        const key = column.key
+        if(column.visible !== false){
           return (
           <Cell
+            key={index}
             width={column.width}
             isHeader={this.state.isHeaderRow}
-            value={this.state.isHeaderRow ? column.name : values.key}
+            value={this.state.isHeaderRow ? column.name : values[key]}
           />
           )
         }
-      }).omitBy(_.isNil).values() 
+        return null
+      }).omitBy(_.isNil).values().value() 
     }
 
     render() {
       return (
         <div
-          className={"tr" + this.state.isHeader ? "head" : "value"}
+          className={"tr " + (this.state.isHeader ? "head" : "value")}
           style={{ display: "flex" }}
         >
           {this.getValues()}
@@ -65,19 +70,25 @@ class Cell extends React.Component {
       };
     }
 
-    getKeys() {
-      return _.chain(this.state.columns)
-        .filter(column => column.visible !== false)
-        .map("key")
-        .value();
-    }
+    // getKeys() {
+    //   return _.chain(this.state.columns)
+    //     .filter(column => column.visible !== false)
+    //     .map("key")
+    //     .value();
+    // }
 
     getContent() {
-      const keys = this.getKeys();
+      return _.map(this.state.values, (obj, index) => {
+        return(<Row key={index} columns={this.state.columns} values={obj}/>)
+      })
     }
 
     render() {
-      return <div className="tbody" />;
+      return (
+        <div className="tbody"> 
+        {this.getContent()}
+        </div>
+      );
     }
   }
 
@@ -95,7 +106,7 @@ class Cell extends React.Component {
         .filter(column => column.visible !== false)
         .map("name")
         .value();
-      return <Row columns={this.state.columns} values={headers} isHeaderRow />;
+      return <Row columns={this.state.columns} values={headers} isHeaderRow/>;
     }
 
     render() {
